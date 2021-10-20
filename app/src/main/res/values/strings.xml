@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Fire_checker</string>
+    <string-array name="types">
+        <item>Первоначальный осмотр</item>
+        <item>Ежеквартальный осмотр</item>
+        <item>Ежегодный осмотр</item>
+        <item>Обслуживание</item>
+    </string-array>
+    <string name="hard_problems_appearence">Отсутствие вмятин, сколов, глубоких царапин на корпусе, узлах управления, гайках и головке огнетушителя</string>
+    <string name="appearence_problems">Состояние защитных и лакокрасочных покрытий удовлетворительно</string>
+    <string name="instruction">Инструкция присутсвует</string>
+    <string name="fuse">Предохранительное устройство в норме</string>
+    <string name="manometr">Манометр исправен</string>
+    <string name="label">Клеймо в наличии</string>
+    <string name="bar">Велчина давления в огентушителе в норме</string>
+    <string name = "weight">Масса огнетушителя в норме</string>
+    <string name="shlang">Состояние гибгкого шланга и распылителя удовлетворительное</string>
+</resources>
+
