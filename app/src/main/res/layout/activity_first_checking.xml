@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/special_black"
     tools:context=".Activity_first_checking">
 
     <Button
-        android:id="@+id/first_back_btn"
+        android:id="@+id/cvartal_back_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="260dp"
+        android:layout_marginStart="240dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
         android:text="ВОЗВРАТ"
@@ -24,22 +25,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="120dp"
-        app:layout_constraintBottom_toTopOf="@+id/first_back_btn"
+        android:background="@color/special_black"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/cvartal_back_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:overScrollMode="never"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/special_black"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/serial_number_field"
+                android:id="@+id/cvartal_serial_number_field"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="40dp"
@@ -48,11 +50,11 @@
                 android:fontFamily="monospace"
                 android:gravity="center"
                 android:text="175612334"
-                android:textColor="@color/special_white"
+                android:textColor="@android:color/secondary_text_dark"
                 android:textSize="34sp" />
 
             <CheckBox
-                android:id="@+id/first_hard_problems_appearence_check_box"
+                android:id="@+id/cvartal_hard_problems_appearence_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -65,7 +67,7 @@
                 android:textColor="@color/special_white" />
 
             <CheckBox
-                android:id="@+id/first_problems_appearence_check_box"
+                android:id="@+id/cvartal_problems_appearence_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -77,7 +79,7 @@
                 android:textColor="@color/special_white" />
 
             <CheckBox
-                android:id="@+id/first_instruction_problems_check_box"
+                android:id="@+id/cvartal_instruction_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -89,7 +91,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_fuse_problems_check_box"
+                android:id="@+id/cvartal_fuse_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -101,7 +103,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_manometr_problems_check_box"
+                android:id="@+id/cvartal_manometr_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -114,7 +116,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_label_problems_check_box"
+                android:id="@+id/cvartal_label_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -126,7 +128,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_weight_problems_check_box"
+                android:id="@+id/cvartal_weight_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -138,7 +140,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_shlang_problems_check_box3"
+                android:id="@+id/cvartal_shlang_problems_check_box3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -150,7 +152,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/first_bar_problems_check_box4"
+                android:id="@+id/cvartal_bar_problems_check_box4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -166,12 +168,12 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/first_send_btn"
+        android:id="@+id/cvartal_send_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="260dp"
+        android:layout_marginEnd="240dp"
         android:layout_marginBottom="48dp"
         android:text="ПРИНЯТЬ"
         android:textColor="@color/special_white"
