@@ -3,7 +3,214 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/special_black"
     tools:context=".Activity_everyyear_checking">
+
+    <Button
+        android:id="@+id/cvartal_back_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="40dp"
+        android:text="ВОЗВРАТ"
+        android:textColor="@color/special_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <Button
+        android:id="@+id/cvartal_send_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="240dp"
+        android:layout_marginBottom="30dp"
+        android:text="ПРИНЯТЬ"
+        android:textColor="@color/special_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="406dp"
+        android:layout_height="566dp"
+        android:background="@color/special_black"
+        android:foregroundGravity="center"
+        android:overScrollMode="never"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/special_black"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/year_serial_number_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="43dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:text="175612334"
+                android:textColor="@android:color/secondary_text_dark"
+                android:textSize="34sp" />
+
+            <CheckBox
+                android:id="@+id/year_hard_problems_appearence_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="53dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:gravity="center_vertical"
+                android:text="@string/hard_problems_appearence"
+                android:textAllCaps="false"
+                android:textColor="@color/special_white" />
+
+            <CheckBox
+                android:id="@+id/year_problems_appearence_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:gravity="center_vertical"
+                android:text="@string/appearence_problems"
+                android:textColor="@color/special_white" />
+
+            <CheckBox
+                android:id="@+id/year_instruction_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/instruction"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_fuse_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/fuse"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_manometr_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:checked="false"
+                android:fontFamily="monospace"
+                android:text="@string/manometr"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_label_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/label"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_weight_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/weight"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_shlang_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/shlang"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_place_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="monospace"
+                android:text="@string/place"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/year_bar_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="monospace"
+                android:text="@string/bar"
+                android:textColor="@color/special_white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/year_prin_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="120dp"
+        android:ems="10"
+        android:hint="Примечание"
+        android:inputType="textPersonName"
+        android:textColor="@color/special_white"
+        android:textColorHint="#66FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
