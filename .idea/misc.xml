@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_every_cvartal_checking.xml" value="0.4" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_everyyear_checking.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_first_checking.xml" value="0.264" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_type_choser.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/type_choser_dialog_layout.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/type_choser_layout.xml" value="0.27447916666666666" />
       </map>
     </option>
   </component>

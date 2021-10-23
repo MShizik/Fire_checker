@@ -42,7 +42,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/year_serial_number_field"
+                android:id="@+id/cvartal_serial_number_field"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="40dp"
@@ -55,7 +55,7 @@
                 android:textSize="34sp" />
 
             <CheckBox
-                android:id="@+id/year_hard_problems_appearence_check_box"
+                android:id="@+id/cvartal_hard_problems_appearence_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="53dp"
                 android:layout_marginStart="40dp"
@@ -68,7 +68,7 @@
                 android:textColor="@color/special_white" />
 
             <CheckBox
-                android:id="@+id/year_problems_appearence_check_box"
+                android:id="@+id/cvartal_problems_appearence_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -80,7 +80,7 @@
                 android:textColor="@color/special_white" />
 
             <CheckBox
-                android:id="@+id/year_instruction_problems_check_box"
+                android:id="@+id/cvartal_instruction_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -92,7 +92,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_fuse_problems_check_box"
+                android:id="@+id/cvartal_fuse_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -104,7 +104,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_manometr_problems_check_box"
+                android:id="@+id/cvartal_manometr_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -117,7 +117,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_label_problems_check_box"
+                android:id="@+id/cvartal_label_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -129,7 +129,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_weight_problems_check_box"
+                android:id="@+id/cvartal_weight_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -141,7 +141,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_shlang_problems_check_box"
+                android:id="@+id/cvartal_shlang_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -153,7 +153,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_place_problems_check_box"
+                android:id="@+id/cvartal_place_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -165,7 +165,7 @@
                 android:textSize="16sp" />
 
             <CheckBox
-                android:id="@+id/year_bar_problems_check_box"
+                android:id="@+id/cvartal_bar_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"

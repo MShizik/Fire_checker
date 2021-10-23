@@ -30,7 +30,7 @@ public class Activity_type_choser extends AppCompatActivity {
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
         types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         checker_type_choser_obj.setAdapter(types_adapter);
-        checker_type_choser_obj.setSelection(1);
+        checker_type_choser_obj.setSelection(0);
 
         checker_type_choser_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
