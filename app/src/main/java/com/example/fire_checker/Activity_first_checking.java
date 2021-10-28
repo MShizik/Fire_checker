@@ -2,7 +2,10 @@ package com.example.fire_checker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -11,7 +14,7 @@ public class Activity_first_checking extends AppCompatActivity {
     TextView serial_number_obj;
     CheckBox first_hard_problems_obj, first_appearence_problems_obj, first_instruction_problems_obj, first_fuse_problems_obj, first_manometr_problems_obj, first_label_problems_obj, first_weight_problems_obj, first_shlang_problems_obj, first_bar_problems_obj;
     Integer first_hard_problems_result=0,first_appearence_problems_result=0,first_instruction_problems_result=0, first_fuse_problems_result=0, first_manometr_problems_result=0, first_label_problems_result=0, first_weight_problems_result=0, first_shlang_problems_result=0, first_bar_problems_result=0;
-
+    Button first_accept_btn, first_back_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +22,8 @@ public class Activity_first_checking extends AppCompatActivity {
         setContentView(R.layout.activity_first_checking);
 
         serial_number_obj=findViewById(R.id.first_serial_number_field);
+        first_accept_btn=findViewById(R.id.first_send_btn);
+        first_back_btn=findViewById(R.id.first_back_btn);
         first_hard_problems_obj=findViewById(R.id.first_hard_problems_appearence_check_box);
         first_appearence_problems_obj=findViewById(R.id.first_problems_appearence_check_box);
         first_instruction_problems_obj=findViewById(R.id.first_instruction_problems_check_box);
@@ -103,6 +108,14 @@ public class Activity_first_checking extends AppCompatActivity {
                 first_bar_problems_result=0;
             }
         } );
+
+        first_accept_btn.setOnClickListener(v -> {
+
+        });
+        first_back_btn.setOnClickListener(v->{
+            Activity_qr_scaner.serial_number="";
+            startActivity(new Intent(Activity_first_checking.this, Activity_qr_scaner.class));
+        });
 
     }
 }
