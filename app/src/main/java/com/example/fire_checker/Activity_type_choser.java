@@ -2,6 +2,7 @@ package com.example.fire_checker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +28,7 @@ public class Activity_type_choser extends AppCompatActivity {
         checker_type_choser_obj=findViewById(R.id.checker_type_choser_field);
         start_checking_btn=findViewById(R.id.start_checking_btn);
 
+
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
         types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         checker_type_choser_obj.setAdapter(types_adapter);
@@ -47,6 +49,7 @@ public class Activity_type_choser extends AppCompatActivity {
         start_checking_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 startActivity(new Intent(Activity_type_choser.this, Activity_qr_scaner.class));
             }
         });
