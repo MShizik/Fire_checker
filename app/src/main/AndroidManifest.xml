@@ -15,14 +15,6 @@
         android:supportsRtl="true"
         android:exported="true"
         android:theme="@style/Theme.Fire_checker">
-        <activity android:name=".Activity_service"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.SERVICE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".Activity_every_cvartal_checking"
             android:exported="true">
             <intent-filter>

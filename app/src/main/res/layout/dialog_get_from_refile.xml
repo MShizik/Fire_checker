@@ -6,7 +6,7 @@
     android:background="#1D273A">
 
     <Button
-        android:id="@+id/dialog_send_to_refile_btn"
+        android:id="@+id/dialog_get_from_refile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"

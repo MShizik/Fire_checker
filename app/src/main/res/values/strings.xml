@@ -8,6 +8,12 @@
         <item>Заправка</item>
         <item>Утилизация</item>
     </string-array>
+    <string-array name="types_service_review">
+        <item>Проверка пройдена</item>
+        <item>Отправить на перезаправку</item>
+        <item>Отправить в ремонт</item>
+        <item>Вывести из эксплуатации</item>
+    </string-array>
     <string name="hard_problems_appearence">Отсутствие вмятин, сколов, глубоких царапин на корпусе, узлах управления, гайках и головке огнетушителя</string>
     <string name="appearence_problems">Состояние защитных и лакокрасочных покрытий удовлетворительно</string>
     <string name="instruction">Инструкция присутсвует</string>

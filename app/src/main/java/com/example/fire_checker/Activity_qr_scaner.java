@@ -2,23 +2,22 @@ package com.example.fire_checker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.CheckBox;
+import android.widget.Spinner;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.Result;
 
 public class Activity_qr_scaner extends AppCompatActivity {
@@ -26,6 +25,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
     CodeScannerView qr_code_scanner_view;
 
     public static String serial_number;
+    public static String service_chosen_type;
+    public static Integer dialog_service_condition_problems_results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +43,68 @@ public class Activity_qr_scaner extends AppCompatActivity {
             @Override
             public void onDecoded(@NonNull Result result) {
                 serial_number=result.getText().toString();
-                System.out.println("каждый раз как первый");
+
                 if (Activity_type_choser.chosen_type.equals("Первоначальный осмотр")){
 
                     startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
 
                 }
                 else if(Activity_type_choser.chosen_type.equals("Ежегодный осмотр")){
-
                     startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class ));
 
                 }
                 else if(Activity_type_choser.chosen_type.equals("Ежеквартальный осмотр")) {
-
                     startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
 
                 }
                 else if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable(){
+                        @Override
+                        public void run(){
+                            Dialog dialog_service = new Dialog(Activity_qr_scaner.this);
 
-                    startActivity(new Intent(Activity_qr_scaner.this, Activity_service.class));
+                            dialog_service.setContentView(R.layout.dialog_on_service);
+                            Spinner dialog_service_obj = (Spinner) dialog_service.findViewById(R.id.dialog_on_service_type_choser_field);
+                            ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
+                            Button dialog_service_send_btn = (Button) dialog_service.findViewById(R.id.dialog_on_service_type_choser_btn);
+                            CheckBox dialog_service_condition_problems = (CheckBox) dialog_service.findViewById(R.id.dialog_on_service_condition_check_box);
+
+                            types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            dialog_service_obj.setAdapter(types_adapter);
+                            dialog_service_obj.setSelection(0);
+                            dialog_service.setCancelable(false);
+
+                            dialog_service_send_btn.setOnClickListener(v -> {
+                                dialog_service.dismiss();
+                                Activity_qr_scaner.serial_number = "";
+                                Activity_type_choser.chosen_type = "";
+                                startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
+                            });
+
+                            dialog_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (isChecked) {
+                                    dialog_service_condition_problems_results = 1;
+                                } else {
+                                    dialog_service_condition_problems_results = 0;
+                                }
+                            });
+
+                            dialog_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                    String[] type = getResources().getStringArray(R.array.types);
+                                    service_chosen_type = type[i].toString();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                }
+                            });
+
+                            dialog_service.show();
+                        }
+                    });
 
                 }
                 else if (Activity_type_choser.chosen_type.equals("Заправка")){
