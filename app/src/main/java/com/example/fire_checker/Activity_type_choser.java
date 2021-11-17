@@ -1,6 +1,7 @@
 package com.example.fire_checker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -27,10 +28,10 @@ public class Activity_type_choser extends AppCompatActivity {
 
         checker_type_choser_obj=findViewById(R.id.checker_type_choser_field);
         start_checking_btn=findViewById(R.id.start_checking_btn);
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
-        types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        types_adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown);
         checker_type_choser_obj.setAdapter(types_adapter);
         checker_type_choser_obj.setSelection(0);
 
