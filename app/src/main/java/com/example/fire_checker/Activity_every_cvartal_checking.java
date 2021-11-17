@@ -18,6 +18,7 @@ import android.widget.TextView;
 public class Activity_every_cvartal_checking extends AppCompatActivity {
 
     TextView serial_number_obj;
+    String tmp;
     CheckBox cvartal_hard_problems_obj, cvartal_appearence_problems_obj, cvartal_instruction_problems_obj, cvartal_fuse_problems_obj, cvartal_manometr_problems_obj, cvartal_label_problems_obj, cvartal_weight_problems_obj, cvartal_shlang_problems_obj, cvartal_place_problems_obj, cvartal_bar_problems_obj;
     Integer cvartal_hard_problems_result = 0, cvartal_appearence_problems_result = 0, cvartal_instruction_problems_result = 0, cvartal_fuse_problems_result = 0, cvartal_manometr_problems_result = 0, cvartal_label_problems_result = 0, cvartal_weight_problems_result = 0, cvartal_shlang_problems_result = 0, cvartal_place_problems_result = 0, cvartal_bar_problems_result = 0;
     Button cvartal_send_btn, cvartal_back_btn;
@@ -143,6 +144,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             String[] type = getResources().getStringArray(R.array.types);
+
                             cvartal_type_chosen = type[i].toString();
                         }
 
@@ -162,6 +164,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
             Activity_type_choser.chosen_type = "";
             startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
         });
+
 
     }
 }

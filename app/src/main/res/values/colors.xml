@@ -10,6 +10,7 @@
     <color name="special_black">#141B29</color>
     <color name="special_purple">#36204e</color>
     <color name="special_white">#F8F7F4</color>
-    <color name="special_red">#984673</color>
+    <color name="special_red">#ed2024</color>
     <color name = "special_yellow">#EDC7B4</color>
+    <color name="gray">#686361</color>
 </resources>
