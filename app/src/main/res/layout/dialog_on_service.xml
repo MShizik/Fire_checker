@@ -4,47 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/special_black">
+    android:background="@drawable/dialog_background">
 
-    <Spinner
-        android:id="@+id/dialog_on_service_type_choser_field"
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/dialog_on_service_type_choser_btn"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_weight=".28"
+        android:background="@drawable/spinner_border"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_on_service_condition_check_box" />
+        tools:layout_editor_absoluteY="268dp">
+
+        <Spinner
+            android:id="@+id/dialog_on_service_type_choser_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/transparent"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.428"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@drawable/drop" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/dialog_on_service_type_choser_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="240dp"
         android:layout_marginBottom="20dp"
+        android:background="@drawable/button_style"
+        android:fontFamily="sans-serif-medium"
+        android:padding="10dp"
         android:text="Отправить"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_on_service_type_choser_field" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
     <CheckBox
         android:id="@+id/dialog_on_service_condition_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="60dp"
+        android:buttonTint="@color/special_red"
+        android:fontFamily="sans-serif-light"
         android:text="Состояние удовлетворительное"
-        android:textColor="@color/special_white"
-        app:layout_constraintBottom_toTopOf="@+id/dialog_on_service_type_choser_field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="49dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

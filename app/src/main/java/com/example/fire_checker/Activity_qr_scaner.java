@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,7 +39,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
         qr_code_scanner_view=findViewById(R.id.qr_scanner);
         qr_code_scanner=new CodeScanner(this, qr_code_scanner_view);
-
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.black));
+        }
 
         qr_code_scanner.setDecodeCallback(new DecodeCallback() {
             @Override

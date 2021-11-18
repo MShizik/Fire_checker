@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@color/special_black"
+    android:background="@color/special_white"
     tools:context=".Activity_everyyear_checking">
 
     <Button
@@ -15,8 +15,11 @@
         android:layout_marginStart="240dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="40dp"
+        android:background="@drawable/button_style"
         android:text="ВОЗВРАТ"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +33,11 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="240dp"
         android:layout_marginBottom="30dp"
+        android:background="@drawable/button_style"
         android:text="ПРИНЯТЬ"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -48,43 +54,46 @@
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/special_black"
+            android:background="@color/special_white"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/year_serial_number_field"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="175612334"
-                android:textColor="@android:color/secondary_text_dark"
-                android:textSize="34sp" />
+                android:textColor="@color/black"
+                android:textSize="35sp" />
 
             <CheckBox
                 android:id="@+id/year_hard_problems_appearence_check_box"
                 android:layout_width="wrap_content"
-                android:layout_height="53dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:text="@string/hard_problems_appearence"
                 android:textAllCaps="false"
-                android:textColor="@color/special_white" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_problems_appearence_check_box"
@@ -93,10 +102,13 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:checked="false"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:text="@string/appearence_problems"
-                android:textColor="@color/special_white" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_instruction_problems_check_box"
@@ -105,10 +117,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/instruction"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_fuse_problems_check_box"
@@ -117,10 +130,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/fuse"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_manometr_problems_check_box"
@@ -129,11 +143,13 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
+                android:buttonTint="@color/special_red"
                 android:checked="false"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif-light"
+
                 android:text="@string/manometr"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_label_problems_check_box"
@@ -142,10 +158,12 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/label"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_weight_problems_check_box"
@@ -154,10 +172,12 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/weight"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_shlang_problems_check_box"
@@ -166,10 +186,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/shlang"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_place_problems_check_box"
@@ -178,10 +199,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/place"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/year_bar_problems_check_box"
@@ -190,10 +212,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/bar"
-                android:textColor="@color/special_white"
-                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 tools:visibility="visible" />
 
             <CheckBox
@@ -203,10 +226,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/filter"
-                android:textColor="@color/special_white"
-                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 tools:visibility="visible" />
 
             <CheckBox
@@ -216,10 +240,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/OTB"
-                android:textColor="@color/special_white"
-                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 tools:visibility="visible" />
 
             <TextView
@@ -229,11 +254,12 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/utechka"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/year_utechka_problems_field"
@@ -244,10 +270,14 @@
                 android:layout_marginEnd="40dp"
                 android:ems="10"
                 android:hint="Введите велечину утечки"
-                android:inputType="textPersonName"
-                android:textColor="@color/special_white"
-                android:textColorHint="#66FFFFFF"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 tools:ignore="TouchTargetSizeCheck" />
+
+
 
             <EditText
                 android:id="@+id/year_prim_field"
@@ -257,11 +287,14 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/black"
                 android:ems="10"
+                android:fontFamily="sans-serif-light"
                 android:hint="Примечание"
-                android:inputType="textPersonName"
-                android:textColor="@color/special_white"
-                android:textColorHint="#66FFFFFF"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>

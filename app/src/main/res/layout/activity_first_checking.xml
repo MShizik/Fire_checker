@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/special_black"
+    android:background="@color/special_white"
     tools:context=".Activity_first_checking">
 
     <Button
@@ -14,10 +14,13 @@
         android:layout_marginStart="240dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
+        android:background="@drawable/button_style"
         android:text="ВОЗВРАТ"
-        android:textColor="@color/special_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
     <ScrollView
@@ -25,8 +28,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="120dp"
-        android:background="@color/special_black"
+        android:background="@color/special_white"
+        android:backgroundTint="@color/special_white"
+        android:defaultFocusHighlightEnabled="true"
+        android:outlineAmbientShadowColor="#FDFDFD"
         android:overScrollMode="never"
+        android:outlineSpotShadowColor="#FFFFFF"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarThumbVertical="@drawable/thumb_verticle_style"
         app:layout_constraintBottom_toTopOf="@+id/first_back_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,21 +46,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/special_black"
+            android:background="@color/special_white"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/first_serial_number_field"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="43dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="175612334"
-                android:textColor="@android:color/secondary_text_dark"
-                android:textSize="34sp" />
+                android:textColor="@color/black"
+                android:textSize="35sp" />
 
             <CheckBox
                 android:id="@+id/first_hard_problems_appearence_check_box"
@@ -60,11 +69,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:checked="false"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:text="@string/hard_problems_appearence"
                 android:textAllCaps="false"
-                android:textColor="@color/special_white" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_problems_appearence_check_box"
@@ -73,10 +85,13 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:text="@string/appearence_problems"
-                android:textColor="@color/special_white" />
+                android:textColor="@color/black"
+
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_instruction_problems_check_box"
@@ -85,10 +100,12 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/instruction"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_fuse_problems_check_box"
@@ -97,10 +114,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/fuse"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_manometr_problems_check_box"
@@ -109,11 +127,12 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
+                android:buttonTint="@color/special_red"
                 android:checked="false"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/manometr"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_label_problems_check_box"
@@ -122,10 +141,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/label"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_weight_problems_check_box"
@@ -134,10 +154,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/weight"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_shlang_problems_check_box"
@@ -146,10 +167,11 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/shlang"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/first_bar_problems_check_box"
@@ -159,10 +181,11 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginBottom="20dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/bar"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -175,8 +198,13 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="240dp"
         android:layout_marginBottom="48dp"
+        android:background="@drawable/button_style"
+        android:backgroundTintMode="add"
         android:text="ПРИНЯТЬ"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/special_black"
+    android:background="@color/special_white"
     android:backgroundTintMode="multiply"
     tools:context=".Activity_every_cvartal_checking">
 
@@ -17,8 +17,11 @@
         android:layout_marginEnd="40dp"
         android:text="ВОЗВРАТ"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/button_style"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
     <ScrollView
@@ -28,6 +31,7 @@
         android:layout_marginBottom="120dp"
         android:background="@color/special_black"
         android:overScrollMode="never"
+
         app:layout_constraintBottom_toTopOf="@+id/cvartal_back_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -38,34 +42,39 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/special_black"
+            android:background="@color/special_white"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/cvartal_serial_number_field"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="43dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="175612334"
-                android:textColor="@android:color/secondary_text_dark"
-                android:textSize="34sp" />
+                android:textColor="@color/black"
+                android:textSize="35sp" />
 
             <CheckBox
                 android:id="@+id/cvartal_hard_problems_appearence_check_box"
                 android:layout_width="wrap_content"
-                android:layout_height="53dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
                 android:gravity="center_vertical"
                 android:text="@string/hard_problems_appearence"
                 android:textAllCaps="false"
-                android:textColor="@color/special_white" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-light"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <CheckBox
                 android:id="@+id/cvartal_problems_appearence_check_box"
@@ -74,10 +83,16 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
+                tools:ignore="TouchTargetSizeCheck"
                 android:gravity="center_vertical"
                 android:text="@string/appearence_problems"
-                android:textColor="@color/special_white" />
+                 />
 
             <CheckBox
                 android:id="@+id/cvartal_instruction_problems_check_box"
@@ -86,10 +101,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/instruction"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                />
 
             <CheckBox
                 android:id="@+id/cvartal_fuse_problems_check_box"
@@ -98,10 +117,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/fuse"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                />
 
             <CheckBox
                 android:id="@+id/cvartal_manometr_problems_check_box"
@@ -111,10 +134,14 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:checked="false"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/manometr"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                />
 
             <CheckBox
                 android:id="@+id/cvartal_label_problems_check_box"
@@ -123,10 +150,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/label"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                 />
 
             <CheckBox
                 android:id="@+id/cvartal_weight_problems_check_box"
@@ -135,10 +166,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/weight"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                 />
 
             <CheckBox
                 android:id="@+id/cvartal_shlang_problems_check_box"
@@ -147,10 +182,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/shlang"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                />
 
             <CheckBox
                 android:id="@+id/cvartal_place_problems_check_box"
@@ -159,10 +198,14 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:fontFamily="monospace"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
                 android:text="@string/place"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                 />
 
             <CheckBox
                 android:id="@+id/cvartal_bar_problems_check_box"
@@ -172,10 +215,11 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginBottom="20dp"
-                android:fontFamily="monospace"
+                android:fontFamily="sans-serif-light"
+                android:buttonTint="@color/special_red"
                 android:text="@string/bar"
-                android:textColor="@color/special_white"
-                android:textSize="16sp" />
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -189,7 +233,10 @@
         android:layout_marginEnd="240dp"
         android:layout_marginBottom="48dp"
         android:text="ПРИНЯТЬ"
+        android:background="@drawable/button_style"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

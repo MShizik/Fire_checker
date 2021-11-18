@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1D273A">
+    android:background="@drawable/dialog_background">
 
     <Button
         android:id="@+id/dialog_utilization_util_btn"
@@ -17,9 +17,12 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="40dp"
-        android:background="@color/special_purple"
-        android:text="Утилизировать"
         android:textColor="@color/special_white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
+        android:background="@drawable/button_style"
+        android:text="Утилизировать"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
