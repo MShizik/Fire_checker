@@ -8,6 +8,6 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:paddingLeft="2dp"
-    android:background="@color/white"
+    android:background="@drawable/spinner_border"
     android:textColor="@color/black"
     />
