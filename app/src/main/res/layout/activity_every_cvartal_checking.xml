@@ -95,22 +95,6 @@
                  />
 
             <CheckBox
-                android:id="@+id/cvartal_instruction_problems_check_box"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="40dp"
-                android:buttonTint="@color/special_red"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:fontFamily="sans-serif-light"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="18sp"
-                android:text="@string/instruction"
-                />
-
-            <CheckBox
                 android:id="@+id/cvartal_fuse_problems_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,13 +102,13 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
+                android:text="@string/fuse"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:fontFamily="sans-serif-light"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="18sp"
-                android:text="@string/fuse"
-                />
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/cvartal_manometr_problems_check_box"
@@ -133,15 +117,15 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
-                android:checked="false"
                 android:buttonTint="@color/special_red"
+                android:checked="false"
+                android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
+                android:text="@string/manometr"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:fontFamily="sans-serif-light"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="18sp"
-                android:text="@string/manometr"
-                />
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/cvartal_label_problems_check_box"
@@ -151,13 +135,13 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:buttonTint="@color/special_red"
+                android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
+                android:text="@string/label"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:fontFamily="sans-serif-light"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="18sp"
-                android:text="@string/label"
-                 />
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/cvartal_weight_problems_check_box"
@@ -174,6 +158,21 @@
                 android:textSize="18sp"
                 android:text="@string/weight"
                  />
+            <CheckBox
+                android:id="@+id/cvartal_instruction_problems_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:buttonTint="@color/special_red"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:fontFamily="sans-serif-light"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="18sp"
+                android:text="@string/instruction"
+                />
 
             <CheckBox
                 android:id="@+id/cvartal_shlang_problems_check_box"

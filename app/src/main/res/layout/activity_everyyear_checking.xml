@@ -119,6 +119,7 @@
                 android:layout_marginEnd="40dp"
                 android:buttonTint="@color/special_red"
                 android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
                 android:text="@string/instruction"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -132,6 +133,7 @@
                 android:layout_marginEnd="40dp"
                 android:buttonTint="@color/special_red"
                 android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
                 android:text="@string/fuse"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -147,6 +149,7 @@
                 android:checked="false"
                 android:fontFamily="sans-serif-light"
 
+                android:minHeight="48dp"
                 android:text="@string/manometr"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -268,15 +271,16 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
+                android:backgroundTint="#676767"
                 android:ems="10"
-                android:hint="Введите велечину утечки"
                 android:fontFamily="sans-serif-light"
+                android:hint="Введите велечину утечки"
                 android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColorHighlight="#1E1E1E"
+                android:textColorHint="@color/gray"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="18sp"
                 tools:ignore="TouchTargetSizeCheck" />
-
 
 
             <EditText
@@ -287,12 +291,13 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="#676767"
                 android:ems="10"
                 android:fontFamily="sans-serif-light"
                 android:hint="Примечание"
                 android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:textColorHighlight="#1E1E1E"
+                android:textColorHint="@color/gray"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="18sp"
                 tools:ignore="TouchTargetSizeCheck" />

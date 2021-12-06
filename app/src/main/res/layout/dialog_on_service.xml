@@ -12,17 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
+        android:layout_marginTop="278dp"
         android:layout_marginEnd="60dp"
         android:layout_weight=".28"
         android:background="@drawable/spinner_border"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="268dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Spinner
             android:id="@+id/dialog_on_service_type_choser_field"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
@@ -47,9 +48,11 @@
 
     <Button
         android:id="@+id/dialog_on_service_type_choser_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="240dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="60dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/button_style"
         android:fontFamily="sans-serif-medium"
@@ -65,16 +68,20 @@
 
     <CheckBox
         android:id="@+id/dialog_on_service_condition_check_box"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="60dp"
         android:layout_marginBottom="60dp"
         android:buttonTint="@color/special_red"
         android:fontFamily="sans-serif-light"
+        android:minHeight="48dp"
         android:text="Состояние удовлетворительное"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="49dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

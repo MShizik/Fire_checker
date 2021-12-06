@@ -103,6 +103,7 @@
 
                 android:buttonTint="@color/special_red"
                 android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
                 android:text="@string/instruction"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -116,6 +117,7 @@
                 android:layout_marginEnd="40dp"
                 android:buttonTint="@color/special_red"
                 android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
                 android:text="@string/fuse"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -130,6 +132,7 @@
                 android:buttonTint="@color/special_red"
                 android:checked="false"
                 android:fontFamily="sans-serif-light"
+                android:minHeight="48dp"
                 android:text="@string/manometr"
                 android:textColor="@color/black"
                 android:textSize="18sp" />

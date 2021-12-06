@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -69,7 +71,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         @Override
                         public void run(){
                             Dialog dialog_service = new Dialog(Activity_qr_scaner.this);
-
+                            dialog_service.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog_service.setContentView(R.layout.dialog_on_service);
                             Spinner dialog_service_obj = (Spinner) dialog_service.findViewById(R.id.dialog_on_service_type_choser_field);
                             ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
@@ -121,6 +123,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         @Override
                         public void run() {
                             Dialog dialog_send_to_refile = new Dialog(Activity_qr_scaner.this);
+                            dialog_send_to_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
                             Button dialog_send_to_refile_confirmation_btn= (Button)dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
                             dialog_send_to_refile_confirmation_btn.setOnClickListener(v->{
@@ -139,6 +142,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         @Override
                         public void run() {
                             Dialog dialog_get_from_refile = new Dialog(Activity_qr_scaner.this);
+                            dialog_get_from_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog_get_from_refile.setContentView(R.layout.dialog_get_from_refile);
                             Button dialog_get_from_refile_confirmation_btn= (Button)dialog_get_from_refile.findViewById(R.id.dialog_get_from_refile_btn);
                             dialog_get_from_refile_confirmation_btn.setOnClickListener(v->{
@@ -158,6 +162,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         @Override
                         public void run() {
                             Dialog dialog_util = new Dialog(Activity_qr_scaner.this);
+                            dialog_util.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog_util.setContentView(R.layout.dialog_utilization_confirmation);
                             Button dialog_util_confirmation_btn= (Button)dialog_util.findViewById(R.id.dialog_utilization_util_btn);
                             dialog_util_confirmation_btn.setOnClickListener(v->{

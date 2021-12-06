@@ -3,10 +3,26 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/button_style.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/color_cursor.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/dialog_background.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/drop.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/spinner_border.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/thumb_verticle_style.xml" value="0.275" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_every_cvartal_checking.xml" value="0.4" />
-        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_everyyear_checking.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_everyyear_checking.xml" value="0.6892488954344624" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_first_checking.xml" value="0.264" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_main.xml" value="0.25885416666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_qr_scaner.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_type_choser.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_get_from_refile.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_on_service.xml" value="0.75" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_send_to_refile.xml" value="0.25885416666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_service_and_review.xml" value="0.264" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_utilization_confirmation.xml" value="0.25885416666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/simple_spinner_dropdown.xml" value="0.25885416666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/spinner_text.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/type_choser_dialog_layout.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/type_choser_layout.xml" value="0.27447916666666666" />
       </map>
