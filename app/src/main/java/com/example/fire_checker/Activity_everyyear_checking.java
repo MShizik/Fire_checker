@@ -163,7 +163,7 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                     dialog_review_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String[] type = getResources().getStringArray(R.array.types);
+                            String[] type = getResources().getStringArray(R.array.types_checking);
                             year_type_chosen = type[i].toString();
                         }
 

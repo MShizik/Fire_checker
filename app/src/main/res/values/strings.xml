@@ -9,11 +9,24 @@
         <item>Утилизация</item>
     </string-array>
     <string-array name="types_service_review">
+        <item>Отправить на перезаправку</item>
+        <item>Отправить в ремонт</item>
+        <item>Вывести из эксплуатации</item>
+    </string-array>
+    <string-array name="types_on_service">
+        <item>Принять с заправки</item>
+        <item>Принять с ремонта</item>
+        <item>Вывести из эксплуатации</item>
+    </string-array>
+    <string-array name="types_checking">
         <item>Проверка пройдена</item>
         <item>Отправить на перезаправку</item>
         <item>Отправить в ремонт</item>
         <item>Вывести из эксплуатации</item>
     </string-array>
+    <string name="fire_error_existance">Огнетушитель с таким QR-кодом не найден в системе</string>
+    <string name="fire_error_used_user">Данный огнетушитель уже привязан к вашей организации</string>
+    <string name="fire_error_used_dif">Данный огнетушитель привязан к другой организации</string>
     <string name="hard_problems_appearence">Отсутствие вмятин, сколов, глубоких царапин на корпусе, узлах управления, гайках и головке огнетушителя</string>
     <string name="appearence_problems">Состояние защитных и лакокрасочных покрытий удовлетворительно</string>
     <string name="instruction">Инструкция присутсвует</string>

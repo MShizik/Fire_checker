@@ -6,19 +6,23 @@
             <solid android:color="#DC2327"/>
 
         </shape>
+        <scale android:scaleHeight="1.2"/>
+        <scale android:scaleWidth="1.2"/>
     </item>
     <item android:state_focused="true">
         <shape android:shape="rectangle" >
             <corners android:radius="4dip" />
             <solid android:color="#DC2327"/>
-
-
         </shape>
+        <scale android:scaleHeight="1.2"/>
+        <scale android:scaleWidth="1.2"/>
     </item>
     <item>
         <shape android:shape="rectangle" >
             <corners android:radius="4dip" />
             <solid android:color="@color/special_red"/>
         </shape>
+
     </item>
+
 </selector>
