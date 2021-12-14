@@ -8,11 +8,11 @@
 
     <TextView
         android:id="@+id/dialog_error_used_user_text"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginEnd="40dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/fire_error_used_user"
@@ -25,15 +25,19 @@
 
     <Button
         android:id="@+id/dialog_error_used_user_back_btn"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="40dp"
 
         android:layout_marginTop="60dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/button_style"
         android:fontFamily="sans-serif-medium"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
         android:text="возврат"
         android:textColor="@color/special_white"
         android:textSize="16sp"

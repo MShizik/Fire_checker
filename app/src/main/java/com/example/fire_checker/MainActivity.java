@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     EditText login_obj, password_obj;
     Integer login_and_password_checker=0;
     public static String login, password;
+    public static String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
                                     while (login_json_reader.hasNext()){
                                         String key = login_json_reader.nextName();
                                         if(key.equals("token")){
+
                                             String value = login_json_reader.nextString();
+                                            System.out.println(value);
+                                            token =value;
                                             break;
                                         }
                                         else{
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             if (login_and_password_checker==1){
                 main_text_view.setTextColor(Color.rgb(237,32,36));
-                main_text_view.setText("Вы ввели не правильный логин или пароль");
+                main_text_view.setText("Вы ввели неправильный логин или пароль");
                 main_text_view.setTextSize(30);
                 login_obj.setText(null);
                 login_obj.setHint("Логин");
