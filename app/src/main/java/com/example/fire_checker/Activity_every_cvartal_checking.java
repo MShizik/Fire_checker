@@ -6,9 +6,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,11 +19,21 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
 public class Activity_every_cvartal_checking extends AppCompatActivity {
 
     TextView serial_number_obj;
     CheckBox cvartal_hard_problems_obj, cvartal_appearence_problems_obj, cvartal_instruction_problems_obj, cvartal_fuse_problems_obj, cvartal_manometr_problems_obj, cvartal_label_problems_obj, cvartal_weight_problems_obj, cvartal_shlang_problems_obj, cvartal_place_problems_obj, cvartal_bar_problems_obj;
-    Integer cvartal_hard_problems_result = 0, cvartal_appearence_problems_result = 0, cvartal_instruction_problems_result = 0, cvartal_fuse_problems_result = 0, cvartal_manometr_problems_result = 0, cvartal_label_problems_result = 0, cvartal_weight_problems_result = 0, cvartal_shlang_problems_result = 0, cvartal_place_problems_result = 0, cvartal_bar_problems_result = 0;
+    Integer cvartal_hard_problems_result = 0, cvartal_appearence_problems_result=0, cvartal_instruction_problems_result = 0, cvartal_fuse_problems_result = 0, cvartal_manometr_problems_result = 0, cvartal_label_problems_result = 0, cvartal_weight_problems_result = 0, cvartal_shlang_problems_result = 0, cvartal_place_problems_result = 0, cvartal_bar_problems_result = 0;
     Button cvartal_send_btn, cvartal_back_btn;
     public static String cvartal_type_chosen;
 
@@ -47,38 +59,19 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
 
         serial_number_obj.setText(Activity_qr_scaner.serial_number);
 
-        cvartal_hard_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_hard_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_appearence_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_appearence_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_instruction_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_instruction_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_fuse_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_fuse_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_manometr_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_manometr_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_label_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-           cvartal_label_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_weight_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_weight_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_place_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_place_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_shlang_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_shlang_problems_result = (isChecked)? 1 : 0;
-        });
-        cvartal_bar_problems_obj.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cvartal_bar_problems_result = (isChecked)? 1 : 0;
-        });
+
 
         cvartal_send_btn.setOnClickListener(v -> {
+            cvartal_hard_problems_result=cvartal_hard_problems_obj.isChecked()?1:0;
+            cvartal_appearence_problems_result=cvartal_appearence_problems_obj.isChecked()?1:0;
+            cvartal_instruction_problems_result=cvartal_instruction_problems_obj.isChecked()?1:0;
+            cvartal_fuse_problems_result=cvartal_fuse_problems_obj.isChecked()?1:0;
+            cvartal_manometr_problems_result=cvartal_manometr_problems_obj.isChecked()?1:0;
+            cvartal_label_problems_result=cvartal_label_problems_obj.isChecked()?1:0;
+            cvartal_weight_problems_result=cvartal_weight_problems_obj.isChecked()?1:0;
+            cvartal_place_problems_result=cvartal_place_problems_obj.isChecked()?1:0;
+            cvartal_shlang_problems_result=cvartal_shlang_problems_obj.isChecked()?1:0;
+            cvartal_bar_problems_result=cvartal_bar_problems_obj.isChecked()?1:0;
             dialog_service_and_review_starter();
         });
 
@@ -107,10 +100,20 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                 dialog_review_cvartal.setCancelable(false);
 
                 dialog_review_send_btn.setOnClickListener(v -> {
-                    dialog_review_cvartal.dismiss();
-                    Activity_qr_scaner.serial_number = "";
-                    Activity_type_choser.chosen_type = "";
-                    startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
+                    if (cvartal_type_chosen.equals("Проверка пройдена")){
+                        annual_check(Activity_qr_scaner.serial_number,cvartal_appearence_problems_result.toString(), cvartal_hard_problems_result.toString(), cvartal_instruction_problems_result.toString(),
+                                cvartal_fuse_problems_result.toString(), cvartal_manometr_problems_result.toString(), cvartal_label_problems_result.toString(), cvartal_weight_problems_result.toString(),
+                                cvartal_shlang_problems_result.toString(), cvartal_bar_problems_result.toString(), MainActivity.token, cvartal_place_problems_result.toString(), dialog_review_cvartal);
+                    }
+                    else if(cvartal_type_chosen.equals("Отправить на перезаправку")){
+                        set_status_request("onRefile",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_cvartal );
+                    }
+                    else if (cvartal_type_chosen.equals("Отправить в ремонт")) {
+                        set_status_request("onRepair",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_cvartal );
+                    }
+                    else if (cvartal_type_chosen.equals("Вывести из эксплуатации")) {
+                        set_status_request("decommissioned",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_cvartal );
+                    }
                 });
 
                 dialog_review_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -130,5 +133,136 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                 dialog_review_cvartal.show();
             }
         });
+    }
+    protected void annual_check(String serial_number,String appearence,String cover, String instruction,
+                                String fuse, String manometr, String label,String weight,
+                                String shlang, String bar, String token, String place, Dialog dialog){
+        final int[] result = {0};
+        final int[] check = {0};
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String update_check_post_params = "fire_id=" + serial_number +"&appearence="+appearence +"&cover="+cover +"&instruction="+instruction+"&fuse="+fuse+"&manometr" +
+                        manometr+"&label="+label+"&weight="+weight+"&place="+place+"&shlang="+shlang+"&bar="+bar;
+                String PROPERTY_AUTH = "Bearer " + token;
+                URL update_check_endpoint = null;
+                try {
+                    update_check_endpoint = new URL("http://194.67.55.58:8080/api/quarterlyCheck");
+                    try {
+                        HttpURLConnection update_check_connection = (HttpURLConnection) update_check_endpoint.openConnection();
+                        update_check_connection.setRequestMethod("POST");
+                        update_check_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                        update_check_connection.setDoOutput(true);
+                        OutputStream os = update_check_connection.getOutputStream();
+                        os.write(update_check_post_params.getBytes());
+                        os.flush();
+                        os.close();
+
+                        if (update_check_connection.getResponseCode() == 200) {
+                            InputStream update_check_response = update_check_connection.getInputStream();
+                            InputStreamReader update_check_response_reader = new InputStreamReader(update_check_response, StandardCharsets.UTF_8);
+                            JsonReader update_check_json_reader = new JsonReader(update_check_response_reader);
+                            update_check_json_reader.beginObject();
+                            while (update_check_json_reader.hasNext()) {
+                                String key = update_check_json_reader.nextName();
+                                if (key.equals("result")) {
+                                    String value = update_check_json_reader.nextString();
+                                    if (value.equals("success")) {
+                                        result[0] =1;
+                                    }
+                                }
+                                else if(key.equals("check_succed")){
+                                    String value = update_check_json_reader.nextString();
+                                    if(value.equals("1")) {
+                                        check[0] = 1;
+                                    }
+                                }
+
+                                else {
+                                    update_check_json_reader.skipValue();
+                                }
+                            }
+                            update_check_json_reader.close();
+                            update_check_connection.disconnect();
+                        } else {
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+                onPostExecute();
+            }
+            public void onPostExecute(){
+                if (result[0]==1 && check[0]==1){
+                    dialog.dismiss();
+                    Activity_qr_scaner.serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
+                }
+            }
+        });
+    }
+    protected void set_status_request(String type, Date date, String serial_number, String token, Dialog main_dialog){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String set_status_post_params = "fire_id=" + serial_number + "&date=" + date + "&type=" + type;
+                String PROPERTY_AUTH = "Bearer " + token;
+                URL set_status_endpoint = null;
+                try {
+                    set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
+                    try {
+                        HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
+                        set_status_connection.setRequestMethod("POST");
+                        set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                        set_status_connection.setDoOutput(true);
+                        OutputStream os = set_status_connection.getOutputStream();
+                        os.write(set_status_post_params.getBytes());
+                        os.flush();
+                        os.close();
+
+                        if (set_status_connection.getResponseCode() == 200) {
+                            InputStream set_status_response = set_status_connection.getInputStream();
+                            InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
+                            JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
+                            set_status_json_reader.beginObject();
+                            while (set_status_json_reader.hasNext()) {
+                                String key = set_status_json_reader.nextName();
+                                if (key.equals("result")) {
+                                    String value = set_status_json_reader.nextString();
+                                    if (value.equals("success")) {
+                                        Activity_qr_scaner.serial_number = "";
+                                        Activity_type_choser.chosen_type = "";
+                                        main_dialog.dismiss();
+                                        startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
+                                    }
+                                } else {
+                                    set_status_json_reader.skipValue();
+                                }
+                            }
+                            set_status_json_reader.close();
+                            set_status_connection.disconnect();
+                        } else {
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
     }
 }

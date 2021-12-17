@@ -3,9 +3,11 @@ package com.example.fire_checker;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -28,7 +30,9 @@ import android.widget.Spinner;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.Result;
+import com.google.zxing.common.CharacterSetECI;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +47,14 @@ import java.nio.charset.StandardCharsets;
 public class Activity_qr_scaner extends AppCompatActivity {
     CodeScanner qr_code_scanner;
     CodeScannerView qr_code_scanner_view;
-    Button scaner_home_btn;
+    AppCompatImageButton scaner_home_btn;
 
     public static String serial_number;
     public static String service_chosen_type;
     public static Integer dialog_service_condition_problems_results;
     public static Integer dialog_on_service_condition_problems_results;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +75,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
             public void onDecoded(@NonNull Result result) {
                 serial_number = result.getText().toString();
                 ownership_checker(serial_number);
-
 
             }
         });
@@ -110,6 +114,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 });
                 dialog_error_existance.setCancelable(false);
                 dialog_error_existance.show();
+                qr_code_scanner.startPreview();
             }
         });
     }
@@ -159,61 +164,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 dialog_util.setContentView(R.layout.dialog_utilization_confirmation);
                 Button dialog_util_confirmation_btn = (Button) dialog_util.findViewById(R.id.dialog_utilization_util_btn);
                 dialog_util_confirmation_btn.setOnClickListener(v -> {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            String type="decommissioned";
-                            Date current_date = new Date();
-                            String util_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + current_date + "&type=" + type;
-                            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                            URL util_endpoint = null;
-                            try {
-                                util_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                                try {
-                                    HttpURLConnection util_connection = (HttpURLConnection) util_endpoint.openConnection();
-                                    util_connection.setRequestMethod("POST");
-                                    util_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                                    util_connection.setDoOutput(true);
-                                    OutputStream os = util_connection.getOutputStream();
-                                    os.write(util_post_params.getBytes());
-                                    os.flush();
-                                    os.close();
-
-                                    if (util_connection.getResponseCode() == 200) {
-                                        InputStream util_response = util_connection.getInputStream();
-                                        InputStreamReader util_response_reader = new InputStreamReader(util_response, StandardCharsets.UTF_8);
-                                        JsonReader util_json_reader = new JsonReader(util_response_reader);
-                                        util_json_reader.beginObject();
-                                        while (util_json_reader.hasNext()) {
-                                            String key = util_json_reader.nextName();
-                                            if (key.equals("result")) {
-                                                String value = util_json_reader.nextString();
-                                                if (value.equals("success")) {
-                                                    Activity_qr_scaner.serial_number = "";
-                                                    Activity_type_choser.chosen_type = "";
-                                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                                    dialog_util.dismiss();
-                                                }
-                                            } else {
-                                                util_json_reader.skipValue();
-                                            }
-                                        }
-                                        util_json_reader.close();
-                                        util_connection.disconnect();
-                                    } else {
-
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-
-
-                        }
-                    });
+                    String type = "";
+                    Date current_date = new Date();
+                    type = "decommissioned";
+                    set_status_request(type, current_date, serial_number, MainActivity.token, dialog_util);
                 });
                 dialog_util.setCancelable(false);
                 dialog_util.show();
@@ -221,451 +175,165 @@ public class Activity_qr_scaner extends AppCompatActivity {
         });
     }
 
-    protected void dialog_refile_starter() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                URL refile_endpoint = null;
-                try {
-                    refile_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + Activity_qr_scaner.serial_number);
-                    try {
-                        HttpURLConnection refile_connection = (HttpURLConnection) refile_endpoint.openConnection();
-                        refile_connection.setRequestMethod("GET");
-                        refile_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+    protected void dialog_refile_starter(String status) {
+        if (status.equals("onRefile")) {
+            //Диалоговое окно для принятия с заправки
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Dialog dialog_get_from_refile = new Dialog(Activity_qr_scaner.this);
+                    dialog_get_from_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog_get_from_refile.setContentView(R.layout.dialog_get_from_refile);
+                    Button dialog_get_from_refile_confirmation_btn = (Button) dialog_get_from_refile.findViewById(R.id.dialog_get_from_refile_btn);
+                    dialog_get_from_refile_confirmation_btn.setOnClickListener(v -> {
+                        String type = "";
+                        Date current_date = new Date();
+                        type = "refiled";
+                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_get_from_refile);
+                    });
+                    dialog_get_from_refile.setCancelable(false);
+                    dialog_get_from_refile.show();
+                }
+            });
+        } else {
+            //Диалоговое окно для отправки на заправку
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Dialog dialog_send_to_refile = new Dialog(Activity_qr_scaner.this);
+                    dialog_send_to_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
+                    Button dialog_send_to_refile_confirmation_btn = (Button) dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
+                    dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
+                        String type = "";
+                        Date current_date = new Date();
+                        type = "onRefile";
+                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_send_to_refile);
+                    });
+                    dialog_send_to_refile.setCancelable(false);
+                    dialog_send_to_refile.show();
+                }
+            });
+        }
+    }
 
-                        if (refile_connection.getResponseCode() == 200) {
-                            InputStream refile_response = refile_connection.getInputStream();
-                            InputStreamReader refile_response_reader = new InputStreamReader(refile_response, StandardCharsets.UTF_8);
-                            JsonReader refile_json_reader = new JsonReader(refile_response_reader);
-                            refile_json_reader.beginObject();
-                            while (refile_json_reader.hasNext()) {
-                                String key = refile_json_reader.nextName();
-                                if (key.equals("current_status")) {
-                                    String value = refile_json_reader.nextString();
-                                    if (value.equals("onRefile")) {
-                                        //Диалоговое окно для принятия с заправки
-                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Dialog dialog_get_from_refile = new Dialog(Activity_qr_scaner.this);
-                                                dialog_get_from_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                dialog_get_from_refile.setContentView(R.layout.dialog_get_from_refile);
-                                                Button dialog_get_from_refile_confirmation_btn = (Button) dialog_get_from_refile.findViewById(R.id.dialog_get_from_refile_btn);
-                                                dialog_get_from_refile_confirmation_btn.setOnClickListener(v -> {
-                                                    AsyncTask.execute(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            String type="refiled";
-                                                            Date current_date = new Date();
-                                                            String get_from_refile_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + current_date + "&type=" + type;
-                                                            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                                                            URL get_from_refile_endpoint = null;
-                                                            try {
-                                                                get_from_refile_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                                                                try {
-                                                                    HttpURLConnection get_from_refile_connection = (HttpURLConnection) get_from_refile_endpoint.openConnection();
-                                                                    get_from_refile_connection.setRequestMethod("POST");
-                                                                    get_from_refile_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+    protected void dialog_service_starter(String status) {
 
-                                                                    get_from_refile_connection.setDoOutput(true);
-                                                                    OutputStream os = get_from_refile_connection.getOutputStream();
-                                                                    os.write(get_from_refile_post_params.getBytes());
-                                                                    os.flush();
-                                                                    os.close();
+        if (status.equals("onRepair") || status.equals("onRefile")) {
+            //Диалоговое окно для закрытия обслуживания
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Dialog dialog_service = new Dialog(Activity_qr_scaner.this);
+                    dialog_service.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog_service.setContentView(R.layout.dialog_on_service);
+                    Spinner dialog_service_obj = (Spinner) dialog_service.findViewById(R.id.dialog_on_service_type_choser_field);
+                    ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
+                    Button dialog_service_send_btn = (Button) dialog_service.findViewById(R.id.dialog_on_service_type_choser_btn);
+                    CheckBox dialog_service_condition_problems = (CheckBox) dialog_service.findViewById(R.id.dialog_on_service_condition_check_box);
 
-                                                                    if (get_from_refile_connection.getResponseCode() == 200) {
-                                                                        InputStream get_from_refile_response = get_from_refile_connection.getInputStream();
-                                                                        InputStreamReader get_from_refile_response_reader = new InputStreamReader(get_from_refile_response, StandardCharsets.UTF_8);
-                                                                        JsonReader get_from_refile_json_reader = new JsonReader(get_from_refile_response_reader);
-                                                                        get_from_refile_json_reader.beginObject();
-                                                                        while (get_from_refile_json_reader.hasNext()) {
-                                                                            String key = get_from_refile_json_reader.nextName();
-                                                                            if (key.equals("result")) {
-                                                                                String value = get_from_refile_json_reader.nextString();
-                                                                                if (value.equals("success")) {
-                                                                                    Activity_qr_scaner.serial_number = "";
-                                                                                    Activity_type_choser.chosen_type = "";
-                                                                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                                                                    dialog_get_from_refile.dismiss();
-                                                                                }
-                                                                            } else {
-                                                                                get_from_refile_json_reader.skipValue();
-                                                                            }
-                                                                        }
-                                                                        get_from_refile_json_reader.close();
-                                                                        get_from_refile_connection.disconnect();
-                                                                    } else {
+                    types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    dialog_service_obj.setAdapter(types_adapter);
+                    dialog_service_obj.setSelection(0);
+                    dialog_service.setCancelable(false);
 
-                                                                    }
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            } catch (MalformedURLException e) {
-                                                                e.printStackTrace();
-                                                            }
+                    dialog_service_send_btn.setOnClickListener(v -> {
+                        String type = "";
+                        Date current_date = new Date();
+                        if (service_chosen_type.equals("Отправить на заправку")) {
+                            type = "onRefile";
+                        } else if (service_chosen_type.equals("Отправить на ремонт")) {
+                            type = "onRepair";
+                        } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
+                            type = "decommissioned";
+                        }
+                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_service);
+                    });
 
-
-                                                        }
-                                                    });
-                                                });
-                                                dialog_get_from_refile.setCancelable(false);
-                                                dialog_get_from_refile.show();
-                                            }
-                                        });
-                                    } else {
-                                        //Диалоговое окно для отправки на заправку
-                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Dialog dialog_send_to_refile = new Dialog(Activity_qr_scaner.this);
-                                                dialog_send_to_refile.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
-                                                Button dialog_send_to_refile_confirmation_btn = (Button) dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
-                                                dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
-                                                    AsyncTask.execute(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            String type="onRefile";
-                                                            Date current_date = new Date();
-                                                            String send_to_refile_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + current_date + "&type=" + type;
-                                                            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                                                            URL send_to_refile_endpoint = null;
-                                                            try {
-                                                                send_to_refile_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                                                                try {
-                                                                    HttpURLConnection send_to_refile_connection = (HttpURLConnection) send_to_refile_endpoint.openConnection();
-                                                                    send_to_refile_connection.setRequestMethod("POST");
-                                                                    send_to_refile_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                                                                    send_to_refile_connection.setDoOutput(true);
-                                                                    OutputStream os = send_to_refile_connection.getOutputStream();
-                                                                    os.write(send_to_refile_post_params.getBytes());
-                                                                    os.flush();
-                                                                    os.close();
-
-                                                                    if (send_to_refile_connection.getResponseCode() == 200) {
-                                                                        InputStream send_to_refile_response = send_to_refile_connection.getInputStream();
-                                                                        InputStreamReader send_to_refile_response_reader = new InputStreamReader(send_to_refile_response, StandardCharsets.UTF_8);
-                                                                        JsonReader send_to_refile_json_reader = new JsonReader(send_to_refile_response_reader);
-                                                                        send_to_refile_json_reader.beginObject();
-                                                                        while (send_to_refile_json_reader.hasNext()) {
-                                                                            String key = send_to_refile_json_reader.nextName();
-                                                                            if (key.equals("result")) {
-                                                                                String value = send_to_refile_json_reader.nextString();
-                                                                                if (value.equals("success")) {
-                                                                                    Activity_qr_scaner.serial_number = "";
-                                                                                    Activity_type_choser.chosen_type = "";
-                                                                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                                                                    dialog_send_to_refile.dismiss();
-                                                                                }
-                                                                            } else {
-                                                                                send_to_refile_json_reader.skipValue();
-                                                                            }
-                                                                        }
-                                                                        send_to_refile_json_reader.close();
-                                                                        send_to_refile_connection.disconnect();
-                                                                    } else {
-
-                                                                    }
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            } catch (MalformedURLException e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-                                                    });
-                                                });
-                                                dialog_send_to_refile.setCancelable(false);
-                                                dialog_send_to_refile.show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    refile_json_reader.skipValue();
-                                }
-                            }
-                            refile_json_reader.close();
-                            refile_connection.disconnect();
+                    dialog_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (isChecked) {
+                            dialog_service_condition_problems_results = 1;
                         } else {
+                            dialog_service_condition_problems_results = 0;
+                        }
+                    });
 
+                    dialog_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            String[] type = getResources().getStringArray(R.array.types_service_review);
+                            service_chosen_type = type[i].toString();
                         }
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+                    dialog_service.show();
                 }
+            });
+        } else {
+            //Диалоговое окно для закрытия обслуживания
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Dialog dialog_on_service = new Dialog(Activity_qr_scaner.this);
+                    dialog_on_service.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog_on_service.setContentView(R.layout.dialog_on_service);
+                    Spinner dialog_on_service_obj = (Spinner) dialog_on_service.findViewById(R.id.dialog_on_service_type_choser_field);
+                    ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
+                    Button dialog_on_service_send_btn = (Button) dialog_on_service.findViewById(R.id.dialog_on_service_type_choser_btn);
+                    CheckBox dialog_on_service_condition_problems = (CheckBox) dialog_on_service.findViewById(R.id.dialog_on_service_condition_check_box);
 
+                    types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    dialog_on_service_obj.setAdapter(types_adapter);
+                    dialog_on_service_obj.setSelection(0);
+                    dialog_on_service.setCancelable(false);
 
-            }
-        });
+                    dialog_on_service_send_btn.setOnClickListener(v -> {
+                        String type = "";
+                        Date current_date = new Date();
+                        if (service_chosen_type.equals("Принять с заправки")) {
+                            type = "refiled";
+                        } else if (service_chosen_type.equals("Принять с ремонта")) {
+                            type = "repaired";
+                        } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
+                            type = "decommissioned";
+                        }
+                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_on_service);
+                    });
 
+                    dialog_on_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (isChecked) {
+                            dialog_on_service_condition_problems_results = 1;
+                        } else {
+                            dialog_on_service_condition_problems_results = 0;
+                        }
+                    });
+
+                    dialog_on_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            String[] type = getResources().getStringArray(R.array.types_on_service);
+                            service_chosen_type = type[i].toString();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+                    dialog_on_service.show();
+                }
+            });
+        }
 
     }
 
-    protected void dialog_service_starter() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                URL service_endpoint = null;
-                try {
-                    service_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + Activity_qr_scaner.serial_number);
-                    try {
-                        HttpURLConnection service_connection = (HttpURLConnection) service_endpoint.openConnection();
-                        service_connection.setRequestMethod("GET");
-                        service_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
 
-                        if (service_connection.getResponseCode() == 200) {
-                            InputStream service_response = service_connection.getInputStream();
-                            InputStreamReader service_response_reader = new InputStreamReader(service_response, StandardCharsets.UTF_8);
-                            JsonReader service_json_reader = new JsonReader(service_response_reader);
-                            service_json_reader.beginObject();
-                            while (service_json_reader.hasNext()) {
-                                String key = service_json_reader.nextName();
-                                if (key.equals("current_status")) {
-                                    String value = service_json_reader.nextString();
-                                    if (value.equals("onService")) {
-                                        //Диалоговое окно для закрытия обслуживания
-                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Dialog dialog_service = new Dialog(Activity_qr_scaner.this);
-                                                dialog_service.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                dialog_service.setContentView(R.layout.dialog_on_service);
-                                                Spinner dialog_service_obj = (Spinner) dialog_service.findViewById(R.id.dialog_on_service_type_choser_field);
-                                                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
-                                                Button dialog_service_send_btn = (Button) dialog_service.findViewById(R.id.dialog_on_service_type_choser_btn);
-                                                CheckBox dialog_service_condition_problems = (CheckBox) dialog_service.findViewById(R.id.dialog_on_service_condition_check_box);
-
-                                                types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                                dialog_service_obj.setAdapter(types_adapter);
-                                                dialog_service_obj.setSelection(0);
-                                                dialog_service.setCancelable(false);
-
-                                                dialog_service_send_btn.setOnClickListener(v -> {
-                                                    AsyncTask.execute(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            String type="";
-                                                            Date current_date = new Date();
-                                                            if (service_chosen_type.equals("Отправить на заправку")) {
-                                                                type = "onRefile";
-                                                            } else if (service_chosen_type.equals("Отправить на ремонт")) {
-                                                                type = "onRepair";
-                                                            } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
-                                                                type = "decommissioned";
-                                                            }
-                                                            String service_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + current_date + "&type=" + type;
-                                                            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                                                            URL service_endpoint = null;
-                                                            try {
-                                                                service_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                                                                try {
-                                                                    HttpURLConnection service_connection = (HttpURLConnection) service_endpoint.openConnection();
-                                                                    service_connection.setRequestMethod("POST");
-                                                                    service_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                                                                    service_connection.setDoOutput(true);
-                                                                    OutputStream os = service_connection.getOutputStream();
-                                                                    os.write(service_post_params.getBytes());
-                                                                    os.flush();
-                                                                    os.close();
-
-                                                                    if (service_connection.getResponseCode() == 200) {
-                                                                        InputStream service_response = service_connection.getInputStream();
-                                                                        InputStreamReader service_response_reader = new InputStreamReader(service_response, StandardCharsets.UTF_8);
-                                                                        JsonReader service_json_reader = new JsonReader(service_response_reader);
-                                                                        service_json_reader.beginObject();
-                                                                        while (service_json_reader.hasNext()) {
-                                                                            String key = service_json_reader.nextName();
-                                                                            if (key.equals("result")) {
-                                                                                String value = service_json_reader.nextString();
-                                                                                if (value.equals("success")) {
-                                                                                    Activity_qr_scaner.serial_number = "";
-                                                                                    Activity_type_choser.chosen_type = "";
-                                                                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                                                                    dialog_service.dismiss();
-                                                                                }
-                                                                            } else {
-                                                                                service_json_reader.skipValue();
-                                                                            }
-                                                                        }
-                                                                        service_json_reader.close();
-                                                                        service_connection.disconnect();
-                                                                    } else {
-
-                                                                    }
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            } catch (MalformedURLException e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-                                                    });
-                                                });
-
-                                                dialog_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                                    if (isChecked) {
-                                                        dialog_service_condition_problems_results = 1;
-                                                    } else {
-                                                        dialog_service_condition_problems_results = 0;
-                                                    }
-                                                });
-
-                                                dialog_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                                    @Override
-                                                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                                        String[] type = getResources().getStringArray(R.array.types_service_review);
-                                                        service_chosen_type = type[i].toString();
-                                                    }
-
-                                                    @Override
-                                                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                                    }
-                                                });
-
-                                                dialog_service.show();
-                                            }
-                                        });
-                                    } else {
-                                        //Диалоговое окно для закрытия обслуживания
-                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Dialog dialog_on_service = new Dialog(Activity_qr_scaner.this);
-                                                dialog_on_service.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                dialog_on_service.setContentView(R.layout.dialog_on_service);
-                                                Spinner dialog_on_service_obj = (Spinner) dialog_on_service.findViewById(R.id.dialog_on_service_type_choser_field);
-                                                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_qr_scaner.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
-                                                Button dialog_on_service_send_btn = (Button) dialog_on_service.findViewById(R.id.dialog_on_service_type_choser_btn);
-                                                CheckBox dialog_on_service_condition_problems = (CheckBox) dialog_on_service.findViewById(R.id.dialog_on_service_condition_check_box);
-
-                                                types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                                dialog_on_service_obj.setAdapter(types_adapter);
-                                                dialog_on_service_obj.setSelection(0);
-                                                dialog_on_service.setCancelable(false);
-
-                                                dialog_on_service_send_btn.setOnClickListener(v -> {
-
-                                                    AsyncTask.execute(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            String type="";
-                                                            Date current_date = new Date();
-                                                            if (service_chosen_type.equals("Принять с заправки")) {
-                                                                type = "refiled";
-                                                            } else if (service_chosen_type.equals("Принять с ремонта")) {
-                                                                type = "repaired";
-                                                            } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
-                                                                type = "decommissioned";
-                                                            }
-                                                            String on_service_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + current_date.getDate() + "&type=" + type;
-                                                            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                                                            URL on_service_endpoint = null;
-                                                            try {
-                                                                on_service_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                                                                try {
-                                                                    HttpURLConnection on_service_connection = (HttpURLConnection) on_service_endpoint.openConnection();
-                                                                    on_service_connection.setRequestMethod("POST");
-                                                                    on_service_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                                                                    on_service_connection.setDoOutput(true);
-                                                                    OutputStream os = on_service_connection.getOutputStream();
-                                                                    os.write(on_service_post_params.getBytes());
-                                                                    os.flush();
-                                                                    os.close();
-
-                                                                    if (on_service_connection.getResponseCode() == 200) {
-                                                                        InputStream on_service_response = on_service_connection.getInputStream();
-                                                                        InputStreamReader on_service_response_reader = new InputStreamReader(on_service_response, StandardCharsets.UTF_8);
-                                                                        JsonReader on_service_json_reader = new JsonReader(on_service_response_reader);
-                                                                        on_service_json_reader.beginObject();
-                                                                        while (on_service_json_reader.hasNext()) {
-                                                                            String key = on_service_json_reader.nextName();
-                                                                            if (key.equals("result")) {
-                                                                                String value = on_service_json_reader.nextString();
-                                                                                if (value.equals("success")) {
-                                                                                    Activity_qr_scaner.serial_number = "";
-                                                                                    Activity_type_choser.chosen_type = "";
-                                                                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                                                                    dialog_on_service.dismiss();
-                                                                                }
-                                                                            } else {
-                                                                                on_service_json_reader.skipValue();
-                                                                            }
-                                                                        }
-                                                                        on_service_json_reader.close();
-                                                                        on_service_connection.disconnect();
-                                                                    } else {
-
-                                                                    }
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            } catch (MalformedURLException e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-                                                    });
-                                                });
-
-                                                dialog_on_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                                    if (isChecked) {
-                                                        dialog_on_service_condition_problems_results = 1;
-                                                    } else {
-                                                        dialog_on_service_condition_problems_results = 0;
-                                                    }
-                                                });
-
-                                                dialog_on_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                                    @Override
-                                                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                                        String[] type = getResources().getStringArray(R.array.types_on_service);
-                                                        service_chosen_type = type[i].toString();
-                                                    }
-
-                                                    @Override
-                                                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                                    }
-                                                });
-
-                                                dialog_on_service.show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    service_json_reader.skipValue();
-                                }
-                            }
-                            service_json_reader.close();
-                            service_connection.disconnect();
-                        } else {
-
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     protected void ownership_checker(String serial) {
         final int[] result = new int[2];
         final String[] ownership = new String[2];
@@ -704,11 +372,13 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     ownership_json_reader.skipValue();
                                 }
                             }
-                            if (ownership[0].equals("1") && ownership[1].equals("1")) {
+                            if (ownership[0].equals("1") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                                startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
+
+                            } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                                dialog_error_used_user_starter();
+                            } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                                 switch (Activity_type_choser.chosen_type) {
-                                    case "Первоначальный осмотр": {
-                                        startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
-                                    }
                                     case "Ежегодный осмотр": {
                                         startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
                                     }
@@ -716,22 +386,126 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                         startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
                                     }
                                     case "Обслуживание": {
-                                        dialog_service_starter();
+                                        get_status_request(serial_number, MainActivity.token, "Обслуживание");
                                     }
                                     case "Заправка": {
-                                        dialog_refile_starter();
+                                        get_status_request(serial_number, MainActivity.token, "Заправка");
                                     }
                                     case "Утилизация": {
                                         dialog_util_starter();
                                     }
                                 }
-                            } else if (ownership[0].equals("0") && ownership[1].equals("1")) {
-                                dialog_error_used_user_starter();
+
                             } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
                                 dialog_error_used_dif_starter();
                             }
                             ownership_json_reader.close();
                             ownership_connection.disconnect();
+                        } else {
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (
+                        MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+    }
+
+    protected void get_status_request(String token, String serial_number, String type) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                String PROPERTY_AUTH = "Bearer" + token;
+                URL get_status_endpoint = null;
+                try {
+                    get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
+                    try {
+                        HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
+                        get_status_connection.setRequestMethod("GET");
+                        get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                        if (get_status_connection.getResponseCode() == 200) {
+                            InputStream get_status_input = get_status_connection.getInputStream();
+                            InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
+                            JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
+                            get_status_json_reader.beginObject();
+                            while (get_status_json_reader.hasNext()) {
+                                String key = get_status_json_reader.nextName();
+                                System.out.println(key);
+                                if (key.equals("current_status")) {
+                                    String value = get_status_json_reader.nextString();
+                                    System.out.println(value);
+                                    if (type.equals("Обслуживание")) {
+                                        dialog_service_starter(value);
+                                    } else {
+                                        dialog_refile_starter(value);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    protected void set_status_request(String type, Date date, String serial_number, String token, Dialog main_dialog) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String set_status_post_params = "fire_id=" + serial_number + "&date=" + date + "&type=" + type;
+                String PROPERTY_AUTH = "Bearer " + token;
+                URL set_status_endpoint = null;
+                try {
+                    set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
+                    try {
+                        HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
+                        set_status_connection.setRequestMethod("POST");
+                        set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                        set_status_connection.setDoOutput(true);
+                        OutputStream os = set_status_connection.getOutputStream();
+                        os.write(set_status_post_params.getBytes());
+                        os.flush();
+                        os.close();
+
+                        if (set_status_connection.getResponseCode() == 200) {
+                            InputStream set_status_response = set_status_connection.getInputStream();
+                            InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
+                            JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
+                            set_status_json_reader.beginObject();
+                            while (set_status_json_reader.hasNext()) {
+                                String key = set_status_json_reader.nextName();
+                                System.out.println(key);
+                                if (key.equals("result")) {
+                                    String value = set_status_json_reader.nextString();
+                                    System.out.println(value);
+                                    if (value.equals("success")) {
+                                        Activity_qr_scaner.serial_number = "";
+                                        Activity_type_choser.chosen_type = "";
+                                        main_dialog.dismiss();
+                                        startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
+                                    }
+                                } else {
+                                    set_status_json_reader.skipValue();
+                                }
+                            }
+                            set_status_json_reader.close();
+                            set_status_connection.disconnect();
                         } else {
 
                         }

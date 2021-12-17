@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -115,10 +114,13 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
+                    public void onProgressUpdate(){
+
+                    }
                 });
             if (login_and_password_checker==1){
                 main_text_view.setTextColor(Color.rgb(237,32,36));
-                main_text_view.setText("Вы ввели неправильный логин или пароль");
+                main_text_view.setText("Неправильный логин или пароль");
                 main_text_view.setTextSize(30);
                 login_obj.setText(null);
                 login_obj.setHint("Логин");
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(MainActivity.this,"permission granted", Toast.LENGTH_SHORT).show();
-                // perform your action here
+
 
             } else {
                 Toast.makeText(MainActivity.this,"permission not granted", Toast.LENGTH_SHORT).show();
