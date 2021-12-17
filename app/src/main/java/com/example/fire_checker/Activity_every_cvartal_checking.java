@@ -1,7 +1,5 @@
 package com.example.fire_checker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +16,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,13 +173,15 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                                         result[0] =1;
                                     }
                                 }
-                                else if(key.equals("check_succed")){
-                                    String value = update_check_json_reader.nextString();
-                                    if(value.equals("1")) {
-                                        check[0] = 1;
+                                else if(key.equals("data")){
+                                    update_check_json_reader.beginObject();
+                                    while (update_check_json_reader.hasNext()){
+                                        String key_2 = update_check_json_reader.nextName();
+                                        if (key_2.equals("check_succed")){
+                                            check[0]=1;
+                                        }
                                     }
                                 }
-
                                 else {
                                     update_check_json_reader.skipValue();
                                 }
@@ -202,8 +204,8 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                 if (result[0]==1 && check[0]==1){
                     dialog.dismiss();
                     Activity_qr_scaner.serial_number = "";
-                    Activity_type_choser.chosen_type = "";
-                    startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
+
+                    startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_qr_scaner.class));
                 }
             }
         });
@@ -244,7 +246,8 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                                         main_dialog.dismiss();
                                         startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
                                     }
-                                } else {
+                                }
+                                else {
                                     set_status_json_reader.skipValue();
                                 }
                             }

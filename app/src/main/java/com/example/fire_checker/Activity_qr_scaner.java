@@ -1,19 +1,11 @@
 package com.example.fire_checker;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
-
-import java.util.Date;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -27,22 +19,24 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.Result;
-import com.google.zxing.common.CharacterSetECI;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 public class Activity_qr_scaner extends AppCompatActivity {
     CodeScanner qr_code_scanner;
@@ -358,15 +352,24 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             ownership_json_reader.beginObject();
                             while (ownership_json_reader.hasNext()) {
                                 String key = ownership_json_reader.nextName();
-                                System.out.println(key);
-                                if (key.equals("isFree")) {
-                                    ownership[0] = ownership_json_reader.nextString();
-                                    break;
-                                } else if (key.equals("userFire")) {
-                                    ownership[1] = ownership_json_reader.nextString();
-                                } else if (key.equals("result")) {
+                                if (key.equals("result")) {
                                     if (!ownership_json_reader.nextString().equals("success")) {
                                         dialog_error_existance_starter();
+                                    }
+                                } else if (key.equals("data")) {
+                                    ownership_json_reader.beginObject();
+                                    while (ownership_json_reader.hasNext()) {
+                                        String key_2 = ownership_json_reader.nextName();
+                                        System.out.println(key_2);
+                                        if (key_2.equals("isFree")) {
+                                            ownership[0] = ownership_json_reader.nextString();
+                                            System.out.println(ownership[0]);
+                                        } else if (key_2.equals("userFire")) {
+                                            ownership[1] = ownership_json_reader.nextString();
+                                            System.out.println(ownership[1]);
+                                        } else {
+                                            ownership_json_reader.skipValue();
+                                        }
                                     }
                                 } else {
                                     ownership_json_reader.skipValue();

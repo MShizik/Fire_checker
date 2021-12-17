@@ -1,16 +1,14 @@
 package com.example.fire_checker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 public class Activity_first_checking extends AppCompatActivity {
 
@@ -105,16 +102,22 @@ public class Activity_first_checking extends AppCompatActivity {
                                 update_check_json_reader.beginObject();
                                 while (update_check_json_reader.hasNext()) {
                                     String key = update_check_json_reader.nextName();
+
                                     if (key.equals("result")) {
                                         String value = update_check_json_reader.nextString();
                                         if (value.equals("success")) {
                                             result[0] =1;
                                         }
                                     }
-                                    else if(key.equals("check_succed")){
-                                        String value = update_check_json_reader.nextString();
-                                        if(value.equals("1")) {
-                                            check[0] = 1;
+                                    else if(key.equals("data")){
+                                        update_check_json_reader.beginObject();
+                                        while (update_check_json_reader.hasNext()){
+                                            String key_2 = update_check_json_reader.nextName();
+                                            if (key_2.equals("check_succed")){
+                                                if (update_check_json_reader.nextInt()==1) {
+                                                    check[0] = 1;
+                                                }
+                                            }
                                         }
                                     }
 
@@ -133,8 +136,15 @@ public class Activity_first_checking extends AppCompatActivity {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
+                    onPostExecute();
 
+                }
+                public void onPostExecute(){
+                    Activity_qr_scaner.serial_number = "";
 
+                    if (check[0]==1){
+                        startActivity(new Intent(Activity_first_checking.this , Activity_qr_scaner.class));
+                    }
                 }
             });
     }
