@@ -24,7 +24,7 @@
         <item>Отправить в ремонт</item>
         <item>Вывести из эксплуатации</item>
     </string-array>
-    <string name="fire_error_existance">Огнетушитель с таким QR-кодом не найден в системе</string>
+    <string name="fire_error_existance">Огнетушитель\n с таким  QR-кодом\n не найден в системе</string>
     <string name="fire_error_used_user">Данный огнетушитель уже привязан к вашей организации</string>
     <string name="fire_error_used_dif">Данный огнетушитель привязан к другой организации</string>
     <string name="hard_problems_appearence">Отсутствие вмятин, сколов, глубоких царапин на корпусе, узлах управления, гайках и головке огнетушителя</string>

@@ -10,15 +10,19 @@
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/drop.xml" value="0.275" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.403125" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.275" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/progress_bar_style.xml" value="0.403125" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/spinner_border.xml" value="0.275" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/drawable/thumb_verticle_style.xml" value="0.275" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_every_cvartal_checking.xml" value="0.4" />
-        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_everyyear_checking.xml" value="0.6892488954344624" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_everyyear_checking.xml" value="0.283587786259542" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_first_checking.xml" value="0.264" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_main.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_qr_scaner.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/activity_type_choser.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_api.xml" value="0.38697916666666665" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_check.xml" value="0.37135416666666665" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_existance.xml" value="0.38697916666666665" />
+        <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_not_connected.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_used_dif.xml" value="0.38697916666666665" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_error_used_user.xml" value="0.38697916666666665" />
         <entry key="..\:/Users/sidor/StudioProjects/Fire_checker/app/src/main/res/layout/dialog_get_from_refile.xml" value="0.27447916666666666" />

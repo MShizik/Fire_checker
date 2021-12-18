@@ -1,6 +1,7 @@
 package com.example.fire_checker;
 
-import android.annotation.SuppressLint;
+import static android.view.View.GONE;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,11 +18,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -41,14 +44,17 @@ import java.util.Date;
 public class Activity_qr_scaner extends AppCompatActivity {
     CodeScanner qr_code_scanner;
     CodeScannerView qr_code_scanner_view;
-    AppCompatImageButton scaner_home_btn;
+    ImageButton scaner_home_btn;
+    ConstraintLayout scaner_layout_obj;
+    ProgressBar scaner_progres_bar;
 
+    final int[] result = new int[2];
+    final String[] ownership = new String[2];
     public static String serial_number;
     public static String service_chosen_type;
     public static Integer dialog_service_condition_problems_results;
     public static Integer dialog_on_service_condition_problems_results;
 
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +69,15 @@ public class Activity_qr_scaner extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.black));
         }
-
+        scaner_layout_obj = findViewById(R.id.scaner_progress_layout);
+        scaner_progres_bar = findViewById(R.id.scaner_progress_bar);
+        scaner_layout_obj.setVisibility(GONE);
         qr_code_scanner.setDecodeCallback(new DecodeCallback() {
+
             @Override
             public void onDecoded(@NonNull Result result) {
                 serial_number = result.getText().toString();
-                ownership_checker(serial_number);
+                ownership_request();;
 
             }
         });
@@ -105,6 +114,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 dialog_error_existance_back_btn.setOnClickListener(v -> {
                     dialog_error_existance.dismiss();
                     serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
                 });
                 dialog_error_existance.setCancelable(false);
                 dialog_error_existance.show();
@@ -124,6 +135,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 dialog_error_used_user_back_btn.setOnClickListener(v -> {
                     dialog_error_used_user.dismiss();
                     serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
                 });
                 dialog_error_used_user.setCancelable(false);
                 dialog_error_used_user.show();
@@ -142,9 +155,31 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 dialog_error_used_dif_btn.setOnClickListener(v -> {
                     dialog_error_used_dif.dismiss();
                     serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
                 });
                 dialog_error_used_dif.setCancelable(false);
                 dialog_error_used_dif.show();
+            }
+        });
+    }
+
+    protected void dialog_error_not_connected_starter() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Dialog dialog_error_not_connected = new Dialog(Activity_qr_scaner.this);
+                dialog_error_not_connected.getWindow().setBackgroundDrawable(new ColorDrawable((Color.TRANSPARENT)));
+                dialog_error_not_connected.setContentView(R.layout.dialog_error_not_connected);
+                Button dialog_error_not_connected_btn = (Button) dialog_error_not_connected.findViewById(R.id.dialog_error_not_connected_back_btn);
+                dialog_error_not_connected_btn.setOnClickListener(v -> {
+                    dialog_error_not_connected.dismiss();
+                    serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
+                });
+                dialog_error_not_connected.setCancelable(false);
+                dialog_error_not_connected.show();
             }
         });
     }
@@ -328,99 +363,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
 
-    protected void ownership_checker(String serial) {
-        final int[] result = new int[2];
-        final String[] ownership = new String[2];
-        ownership[0] = "-1";
-        ownership[1] = "-1";
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                URL ownership_endpoint = null;
-                try {
-                    ownership_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisher?fire_id=" + Activity_qr_scaner.serial_number);
-                    try {
-                        HttpURLConnection ownership_connection = (HttpURLConnection) ownership_endpoint.openConnection();
-                        ownership_connection.setRequestMethod("GET");
-                        ownership_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                        if (ownership_connection.getResponseCode() == 200) {
-                            InputStream ownership_response = ownership_connection.getInputStream();
-                            InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
-                            JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
-                            ownership_json_reader.beginObject();
-                            while (ownership_json_reader.hasNext()) {
-                                String key = ownership_json_reader.nextName();
-                                if (key.equals("result")) {
-                                    if (!ownership_json_reader.nextString().equals("success")) {
-                                        dialog_error_existance_starter();
-                                    }
-                                } else if (key.equals("data")) {
-                                    ownership_json_reader.beginObject();
-                                    while (ownership_json_reader.hasNext()) {
-                                        String key_2 = ownership_json_reader.nextName();
-                                        System.out.println(key_2);
-                                        if (key_2.equals("isFree")) {
-                                            ownership[0] = ownership_json_reader.nextString();
-                                            System.out.println(ownership[0]);
-                                        } else if (key_2.equals("userFire")) {
-                                            ownership[1] = ownership_json_reader.nextString();
-                                            System.out.println(ownership[1]);
-                                        } else {
-                                            ownership_json_reader.skipValue();
-                                        }
-                                    }
-                                } else {
-                                    ownership_json_reader.skipValue();
-                                }
-                            }
-                            if (ownership[0].equals("1") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                                startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
-
-                            } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                                dialog_error_used_user_starter();
-                            } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                                switch (Activity_type_choser.chosen_type) {
-                                    case "Ежегодный осмотр": {
-                                        startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
-                                    }
-                                    case "Ежеквартальный осмотр": {
-                                        startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
-                                    }
-                                    case "Обслуживание": {
-                                        get_status_request(serial_number, MainActivity.token, "Обслуживание");
-                                    }
-                                    case "Заправка": {
-                                        get_status_request(serial_number, MainActivity.token, "Заправка");
-                                    }
-                                    case "Утилизация": {
-                                        dialog_util_starter();
-                                    }
-                                }
-
-                            } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
-                                dialog_error_used_dif_starter();
-                            }
-                            ownership_json_reader.close();
-                            ownership_connection.disconnect();
-                        } else {
-
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (
-                        MalformedURLException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
-
-    }
-
     protected void get_status_request(String token, String serial_number, String type) {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -453,6 +395,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     break;
                                 }
                             }
+                        } else {
+                            api_error result_error = new api_error();
+                            result_error.dialog_api_error_starter();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -502,6 +447,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                         Activity_type_choser.chosen_type = "";
                                         main_dialog.dismiss();
                                         startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
+                                    } else {
+                                        api_error result_error = new api_error();
+                                        result_error.dialog_api_error_starter();
                                     }
                                 } else {
                                     set_status_json_reader.skipValue();
@@ -510,7 +458,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             set_status_json_reader.close();
                             set_status_connection.disconnect();
                         } else {
-
+                            api_error result_error = new api_error();
+                            result_error.dialog_api_error_starter();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -524,6 +473,108 @@ public class Activity_qr_scaner extends AppCompatActivity {
         });
 
     }
+
+    public void ownership_request() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                result[0] = -1;
+                ownership[0] = "1";
+                ownership[1] = "1";
+                String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+                URL ownership_endpoint = null;
+                try {
+                    ownership_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisher?fire_id=" + Activity_qr_scaner.serial_number);
+                    try {
+                        HttpURLConnection ownership_connection = (HttpURLConnection) ownership_endpoint.openConnection();
+                        ownership_connection.setRequestMethod("GET");
+                        ownership_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                        if (ownership_connection.getResponseCode() == 200) {
+                            InputStream ownership_response = ownership_connection.getInputStream();
+                            InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
+                            JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
+                            ownership_json_reader.beginObject();
+                            while (ownership_json_reader.hasNext()) {
+                                String key = ownership_json_reader.nextName();
+                                if (key.equals("result")) {
+                                    if (!ownership_json_reader.nextString().equals("success")) {
+                                        result[0] = 0;
+                                    } else {
+                                        result[0] = 1;
+                                    }
+                                } else if (key.equals("data")) {
+                                    ownership_json_reader.beginObject();
+                                    while (ownership_json_reader.hasNext()) {
+                                        String key_2 = ownership_json_reader.nextName();
+
+                                        if (key_2.equals("isFree")) {
+                                            ownership[0] = ownership_json_reader.nextString();
+
+                                        } else if (key_2.equals("userFire")) {
+                                            ownership[1] = ownership_json_reader.nextString();
+
+                                        } else {
+                                            ownership_json_reader.skipValue();
+                                        }
+                                    }
+                                } else {
+                                    ownership_json_reader.skipValue();
+                                }
+                            }
+
+                            ownership_json_reader.close();
+                            ownership_connection.disconnect();
+                        } else {
+                            result[0] = -1;
+                        }
+                        if (ownership[0].equals("-1") && ownership[1].equals("-1") && result[0] == -1) {
+                            api_error result_error = new api_error();
+                            result_error.dialog_api_error_starter();
+                        }
+                        if (result[0] == 0) {
+                            dialog_error_existance_starter();
+                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                            startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
+
+                        } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                            Activity_qr_scaner.this.dialog_error_used_user_starter();
+                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                            Activity_qr_scaner.this.dialog_error_not_connected_starter();
+                        } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                            switch (Activity_type_choser.chosen_type) {
+                                case "Ежегодный осмотр": {
+                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
+                                }
+                                case "Ежеквартальный осмотр": {
+                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
+                                }
+                                case "Обслуживание": {
+                                    get_status_request(serial_number, MainActivity.token, "Обслуживание");
+                                }
+                                case "Заправка": {
+                                    get_status_request(serial_number, MainActivity.token, "Заправка");
+                                }
+                                case "Утилизация": {
+                                    Activity_qr_scaner.this.dialog_util_starter();
+                                }
+                            }
+
+                        } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
+                            dialog_error_used_dif_starter();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (
+                        MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 }
 
 
