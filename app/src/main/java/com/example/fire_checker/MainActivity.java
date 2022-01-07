@@ -138,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    login_and_password_checker = 2;
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                login_and_password_checker = 2;
             }
             return null;
         }
@@ -157,6 +159,15 @@ public class MainActivity extends AppCompatActivity {
                 password_obj.setText(null);
                 password_obj.setHint("Пароль");
 
+            }
+            else if (login_and_password_checker == 2){
+                main_text_view.setTextColor(Color.rgb(237, 32, 36));
+                main_text_view.setText("Отсутсвует соеденение с сервером");
+                main_text_view.setTextSize(30);
+                login_obj.setText(null);
+                login_obj.setHint("Логин");
+                password_obj.setText(null);
+                password_obj.setHint("Пароль");
             }
         }
     }

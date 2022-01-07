@@ -11,4 +11,5 @@
     android:paddingTop="10dp"
     android:singleLine="true"
     android:background="@color/white"
+    android:textAlignment="center"
     />

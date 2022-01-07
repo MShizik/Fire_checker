@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.JsonReader;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -178,7 +179,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     Activity_type_choser.chosen_type = "";
                     startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
                 });
-                dialog_error_not_connected.setCancelable(false);
+                dialog_error_not_connected.setCancelable(true);
                 dialog_error_not_connected.show();
             }
         });
@@ -198,7 +199,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     type = "decommissioned";
                     set_status_request(type, current_date, serial_number, MainActivity.token, dialog_util);
                 });
-                dialog_util.setCancelable(false);
+                dialog_util.setCancelable(true);
                 dialog_util.show();
             }
         });
@@ -220,7 +221,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         type = "refiled";
                         set_status_request(type, current_date, serial_number, MainActivity.token, dialog_get_from_refile);
                     });
-                    dialog_get_from_refile.setCancelable(false);
+                    dialog_get_from_refile.setCancelable(true);
                     dialog_get_from_refile.show();
                 }
             });
@@ -264,7 +265,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     dialog_service_obj.setAdapter(types_adapter);
                     dialog_service_obj.setSelection(0);
-                    dialog_service.setCancelable(false);
+                    dialog_service.setCancelable(true);
 
                     dialog_service_send_btn.setOnClickListener(v -> {
                         String type = "";
@@ -319,7 +320,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     dialog_on_service_obj.setAdapter(types_adapter);
                     dialog_on_service_obj.setSelection(0);
-                    dialog_on_service.setCancelable(false);
+                    dialog_on_service.setCancelable(true);
 
                     dialog_on_service_send_btn.setOnClickListener(v -> {
                         String type = "";
@@ -363,19 +364,19 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
 
-    protected void get_status_request(String token, String serial_number, String type) {
+    protected void get_status_request(String token, String serial_number, String m_type) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                String PROPERTY_AUTH = "Bearer" + token;
+                String PROPERTY_AUTH = "Bearer " + token;
                 URL get_status_endpoint = null;
                 try {
+
                     get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
                     try {
                         HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
                         get_status_connection.setRequestMethod("GET");
                         get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
                         if (get_status_connection.getResponseCode() == 200) {
                             InputStream get_status_input = get_status_connection.getInputStream();
                             InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
@@ -387,7 +388,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                 if (key.equals("current_status")) {
                                     String value = get_status_json_reader.nextString();
                                     System.out.println(value);
-                                    if (type.equals("Обслуживание")) {
+                                    if (m_type.equals("Обслуживание")) {
                                         dialog_service_starter(value);
                                     } else {
                                         dialog_refile_starter(value);
@@ -400,9 +401,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             result_error.dialog_api_error_starter();
                         }
                     } catch (IOException e) {
+
                         e.printStackTrace();
+
                     }
                 } catch (MalformedURLException e) {
+                    System.out.println("4 point");
                     e.printStackTrace();
                 }
 
@@ -419,6 +423,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 String PROPERTY_AUTH = "Bearer " + token;
                 URL set_status_endpoint = null;
                 try {
+                    System.out.println("fuck_you");
                     set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
                     try {
                         HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
@@ -466,6 +471,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                    System.out.println("fuck_you_too");
                 }
 
 
