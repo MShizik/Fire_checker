@@ -97,7 +97,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                 Dialog dialog_review_cvartal = new Dialog(Activity_every_cvartal_checking.this);
                 dialog_review_cvartal.setContentView(R.layout.dialog_service_and_review);
                 Spinner dialog_review_obj = (Spinner) dialog_review_cvartal.findViewById(R.id.dialog_service_and_review_type_choser_field);
-                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_every_cvartal_checking.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
+                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_every_cvartal_checking.this, R.array.types_checking, android.R.layout.simple_spinner_item);
                 Button dialog_review_send_btn = (Button) dialog_review_cvartal.findViewById(R.id.dialog_service_and_review_type_choser_btn);
                 dialog_review_cvartal.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 types_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

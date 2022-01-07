@@ -304,7 +304,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 }
             });
         } else {
-            //Диалоговое окно для закрытия обслуживания
+            //Диалоговое окно для открытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
@@ -545,18 +545,23 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             switch (Activity_type_choser.chosen_type) {
                                 case "Ежегодный осмотр": {
                                     startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
+                                    break;
                                 }
                                 case "Ежеквартальный осмотр": {
                                     startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
+                                    break;
                                 }
                                 case "Обслуживание": {
                                     get_status_request(serial_number, MainActivity.token, "Обслуживание");
+                                    break;
                                 }
                                 case "Заправка": {
                                     get_status_request(serial_number, MainActivity.token, "Заправка");
+                                    break;
                                 }
                                 case "Утилизация": {
-                                    Activity_qr_scaner.this.dialog_util_starter();
+                                    dialog_util_starter();
+                                    break;
                                 }
                             }
 

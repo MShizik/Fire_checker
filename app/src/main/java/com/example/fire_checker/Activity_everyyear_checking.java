@@ -114,7 +114,7 @@ public class Activity_everyyear_checking extends AppCompatActivity {
 
                 dialog_review_year.setContentView(R.layout.dialog_service_and_review);
                 Spinner dialog_review_obj = (Spinner) dialog_review_year.findViewById(R.id.dialog_service_and_review_type_choser_field);
-                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_everyyear_checking.this, R.array.types_service_review, android.R.layout.simple_spinner_item);
+                ArrayAdapter<?> types_adapter = ArrayAdapter.createFromResource(Activity_everyyear_checking.this, R.array.types_checking, android.R.layout.simple_spinner_item);
                 Button dialog_review_send_btn = (Button) dialog_review_year.findViewById(R.id.dialog_service_and_review_type_choser_btn);
                 dialog_review_year.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
