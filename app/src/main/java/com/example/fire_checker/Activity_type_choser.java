@@ -31,7 +31,7 @@ public class Activity_type_choser extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
-        types_adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown);
+        types_adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_main);
         checker_type_choser_obj.setAdapter(types_adapter);
         checker_type_choser_obj.setSelection(0);
 
