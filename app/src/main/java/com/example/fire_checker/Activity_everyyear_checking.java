@@ -180,17 +180,15 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                         os.close();
 
                         if (set_status_connection.getResponseCode() == 200) {
-                            System.out.println(type);
-                            InputStream set_status_response = set_status_connection.getInputStream();
+                                                        InputStream set_status_response = set_status_connection.getInputStream();
                             InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
                             JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
                             set_status_json_reader.beginObject();
                             while (set_status_json_reader.hasNext()) {
                                 String key = set_status_json_reader.nextName();
-                                System.out.println(key);
-                                if (key.equals("result")) {
+                                                               if (key.equals("result")) {
                                     String value = set_status_json_reader.nextString();
-                                    System.out.println(value);
+
                                     if (value.equals("success")) {
                                         Activity_qr_scaner.serial_number = "";
                                         Activity_type_choser.chosen_type = "";
