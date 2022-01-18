@@ -9,7 +9,7 @@
         <item>Утилизация</item>
     </string-array>
     <string-array name="types_service_review">
-        <item>Отправить на перезаправку</item>
+        <item>Отправить на заправку</item>
         <item>Отправить в ремонт</item>
         <item>Вывести из эксплуатации</item>
     </string-array>

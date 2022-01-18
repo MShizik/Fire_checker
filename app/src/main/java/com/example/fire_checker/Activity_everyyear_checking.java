@@ -217,9 +217,11 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
+
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+
                 }
 
 
@@ -306,9 +308,11 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+
             }
             return null;
         }

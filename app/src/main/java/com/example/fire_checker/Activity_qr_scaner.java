@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -387,7 +386,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             while(scanner.hasNext()){
                                 inline+=scanner.nextLine();
                             }
-                                                     /*get_status_json_reader.beginObject();
+                                                     get_status_json_reader.beginObject();
                             while (get_status_json_reader.hasNext()) {
                                 String key = get_status_json_reader.nextName();
                                                           if (key.equals("current_status")) {
@@ -401,7 +400,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                 }
                             }
 
-                       */
+
                         } else {
                             api_error result_error = new api_error();
                             result_error.dialog_api_error_starter();
@@ -412,7 +411,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
                     }
                 } catch (MalformedURLException e) {
-                                        e.printStackTrace();
+                    e.printStackTrace();
                 }
 
             }
@@ -493,19 +492,23 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 String PROPERTY_AUTH = "Bearer " + MainActivity.token;
                 URL ownership_endpoint = null;
                 try {
+
                     ownership_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisher?fire_id=" + Activity_qr_scaner.serial_number);
                     try {
+                        System.out.println("Start point, connection get");
                         HttpURLConnection ownership_connection = (HttpURLConnection) ownership_endpoint.openConnection();
                         ownership_connection.setRequestMethod("GET");
                         ownership_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
 
                         if (ownership_connection.getResponseCode() == 200) {
+                            System.out.println("Second point, connection good ");
                             InputStream ownership_response = ownership_connection.getInputStream();
                             InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
                             JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
                             ownership_json_reader.beginObject();
                             while (ownership_json_reader.hasNext()) {
                                 String key = ownership_json_reader.nextName();
+                                System.out.println(key);
                                 if (key.equals("result")) {
                                     if (!ownership_json_reader.nextString().equals("success")) {
                                         result[0] = 0;
@@ -513,16 +516,18 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                         result[0] = 1;
                                     }
                                 } else if (key.equals("data")) {
+                                    System.out.println(key);
                                     ownership_json_reader.beginObject();
                                     while (ownership_json_reader.hasNext()) {
                                         String key_2 = ownership_json_reader.nextName();
-
+                                        System.out.println(key_2);
                                         if (key_2.equals("isFree")) {
                                             ownership[0] = ownership_json_reader.nextString();
+                                            System.out.println(ownership[0]);
 
                                         } else if (key_2.equals("userFire")) {
                                             ownership[1] = ownership_json_reader.nextString();
-
+                                            System.out.println(ownership[1]);
                                         } else {
                                             ownership_json_reader.skipValue();
                                         }
@@ -543,12 +548,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         }
                         if (result[0] == 0) {
                             dialog_error_existance_starter();
-                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                        } else if (ownership[0].equals("1") && ownership[1].equals("0") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                             startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
 
                         } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                             Activity_qr_scaner.this.dialog_error_used_user_starter();
-                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                        } else if (ownership[0].equals("1") && ownership[1].equals("0") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                             Activity_qr_scaner.this.dialog_error_not_connected_starter();
                         } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                             switch (Activity_type_choser.chosen_type) {
@@ -561,13 +566,13 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     break;
                                 }
                                 case "Обслуживание": {
-                                    dialog_service_starter("onRepair");
-                                    //get_status_request(serial_number, MainActivity.token, "Обслуживание");
+                                    //dialog_service_starter("Repair");
+                                    get_status_request(serial_number, MainActivity.token, "Обслуживание");
                                     break;
                                 }
                                 case "Заправка": {
-                                    dialog_refile_starter("onRefile");
-                                    //get_status_request(serial_number, MainActivity.token, "Заправка");
+                                    //dialog_refile_starter("Refile");
+                                    get_status_request(serial_number, MainActivity.token, "Заправка");
                                     break;
                                 }
                                 case "Утилизация": {
@@ -579,6 +584,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
                             dialog_error_used_dif_starter();
                         }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
