@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:background="#A8FFFFFF"
         android:translationZ="8dp"
-        tools:visibility="gone">
+        >
 
         <ProgressBar
             android:id="@+id/scaner_progress_bar"
@@ -38,11 +38,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_baseline_home_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/ic_baseline_home_24"
 
-         />
+        />
 
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/qr_scanner"

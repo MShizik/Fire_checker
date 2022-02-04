@@ -49,7 +49,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
     ImageButton scaner_home_btn;
     ConstraintLayout scaner_layout_obj;
     ProgressBar scaner_progres_bar;
-
+    String type = "";
+    String value = "";
+    final int[] res = new int[1];
+    final int[] check = new int[1];
     final int[] result = new int[2];
     final String[] ownership = new String[2];
     public static String serial_number;
@@ -61,7 +64,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scaner);
-
         scaner_home_btn = findViewById(R.id.scaner_home_btn);
         qr_code_scanner_view = findViewById(R.id.qr_scanner);
         qr_code_scanner = new CodeScanner(this, qr_code_scanner_view);
@@ -71,15 +73,15 @@ public class Activity_qr_scaner extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.black));
         }
-        scaner_layout_obj = findViewById(R.id.scaner_progress_layout);
+        findViewById(R.id.scaner_progress_layout).setVisibility(GONE);
         scaner_progres_bar = findViewById(R.id.scaner_progress_bar);
-        scaner_layout_obj.setVisibility(GONE);
+        scaner_layout_obj = findViewById(R.id.scaner_progress_layout);
         qr_code_scanner.setDecodeCallback(new DecodeCallback() {
-
             @Override
             public void onDecoded(@NonNull Result result) {
                 serial_number = result.getText().toString();
-                ownership_request();;
+                ownership_request ownership_check = new ownership_request();
+                ownership_check.execute();
 
             }
         });
@@ -88,8 +90,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
             Activity_type_choser.chosen_type = "";
             startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
         });
-
-
     }
 
     @Override
@@ -195,10 +195,11 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 dialog_util.setContentView(R.layout.dialog_utilization_confirmation);
                 Button dialog_util_confirmation_btn = (Button) dialog_util.findViewById(R.id.dialog_utilization_util_btn);
                 dialog_util_confirmation_btn.setOnClickListener(v -> {
-                    String type = "";
                     Date current_date = new Date();
                     type = "decommissioned";
-                    set_status_request(type, current_date, serial_number, MainActivity.token, dialog_util);
+                    set_status_request set_status = new set_status_request();
+                    set_status.execute();
+                    dialog_util.dismiss();
                 });
                 dialog_util.setCancelable(true);
                 dialog_util.show();
@@ -217,10 +218,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_get_from_refile.setContentView(R.layout.dialog_get_from_refile);
                     Button dialog_get_from_refile_confirmation_btn = (Button) dialog_get_from_refile.findViewById(R.id.dialog_get_from_refile_btn);
                     dialog_get_from_refile_confirmation_btn.setOnClickListener(v -> {
-                        String type = "";
                         Date current_date = new Date();
                         type = "refiled";
-                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_get_from_refile);
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                        dialog_get_from_refile.dismiss();
+
                     });
                     dialog_get_from_refile.setCancelable(true);
                     dialog_get_from_refile.show();
@@ -236,10 +239,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
                     Button dialog_send_to_refile_confirmation_btn = (Button) dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
-                        String type = "";
-                        Date current_date = new Date();
                         type = "onRefile";
-                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_send_to_refile);
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                        dialog_send_to_refile.dismiss();
                     });
                     dialog_send_to_refile.setCancelable(false);
                     dialog_send_to_refile.show();
@@ -269,7 +272,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_service.setCancelable(true);
 
                     dialog_service_send_btn.setOnClickListener(v -> {
-                        String type = "";
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
                             type = "refiled";
@@ -278,7 +280,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
                             type = "decommissioned";
                         }
-                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_service);
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                        dialog_service.dismiss();
                     });
 
                     dialog_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -324,7 +328,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_on_service.setCancelable(true);
 
                     dialog_on_service_send_btn.setOnClickListener(v -> {
-                        String type = "";
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = "onRefile";
@@ -333,7 +336,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
                             type = "decommissioned";
                         }
-                        set_status_request(type, current_date, serial_number, MainActivity.token, dialog_on_service);
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                        dialog_on_service.dismiss();
                     });
 
                     dialog_on_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -364,234 +369,286 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
     }
 
+    public class get_status_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
-    protected void get_status_request(String token, String serial_number, String m_type) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                String PROPERTY_AUTH = "Bearer " + token;
-                URL get_status_endpoint = null;
+            res[0] = 0;
+            check[0] = 0;
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL get_status_endpoint = null;
+            try {
+
+                get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
                 try {
-
-                    get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
-                    try {
-                        HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
-                        get_status_connection.setRequestMethod("GET");
-                        get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-                        if (get_status_connection.getResponseCode() == 200) {
-                            String inline="";
-                            Scanner scanner = new Scanner(get_status_endpoint.openStream());
-                            InputStream get_status_input = get_status_connection.getInputStream();
-                            InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
-                            JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
-                            while(scanner.hasNext()){
-                                inline+=scanner.nextLine();
-                                System.out.println(inline);
+                    HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
+                    get_status_connection.setRequestMethod("GET");
+                    get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    if (get_status_connection.getResponseCode() == 200) {
+                        res[0] = 1;
+                        String inline = "";
+                        Scanner scanner = new Scanner(get_status_endpoint.openStream());
+                        InputStream get_status_input = get_status_connection.getInputStream();
+                        InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
+                        JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
+                        get_status_json_reader.beginObject();
+                        while (get_status_json_reader.hasNext()) {
+                            String key = get_status_json_reader.nextName();
+                            if (key.equals("current_status")) {
+                                check[0] = 1;
+                                value = get_status_json_reader.nextString();
+                                break;
+                            } else {
+                                get_status_json_reader.skipValue();
                             }
-                            get_status_json_reader.beginObject();
-                            while (get_status_json_reader.hasNext()) {
-                                String key = get_status_json_reader.nextName();
-                                if (key.equals("current_status")) {
-                                    String value = get_status_json_reader.nextString();
-                                    if (m_type.equals("Обслуживание")) {
-                                        dialog_service_starter(value);
-                                    } else {
-                                        dialog_refile_starter(value);
-                                    }
-                                    break;
-                                }
-                            }
-
-
-                        } else {
                         }
-                    } catch (IOException e) {
-
-                        e.printStackTrace();
-
+                    } else {
+                        res[0] = 0;
                     }
-                } catch (MalformedURLException e) {
-                                        e.printStackTrace();
-                }
-
-            }
-        });
-    }
-
-    protected void set_status_request(String type, Date date, String serial_number, String token, Dialog main_dialog) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                String set_status_post_params = "fire_id=" + serial_number + "&date=" + date + "&type=" + type;
-                String PROPERTY_AUTH = "Bearer " + token;
-                URL set_status_endpoint = null;
-                try {
-
-                    set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                    try {
-                        HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
-                        set_status_connection.setRequestMethod("POST");
-                        set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                        set_status_connection.setDoOutput(true);
-                        OutputStream os = set_status_connection.getOutputStream();
-                        os.write(set_status_post_params.getBytes());
-                        os.flush();
-                        os.close();
-
-                        if (set_status_connection.getResponseCode() == 200) {
-                            InputStream set_status_response = set_status_connection.getInputStream();
-                            InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
-                            JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
-                            set_status_json_reader.beginObject();
-                            while (set_status_json_reader.hasNext()) {
-                                String key = set_status_json_reader.nextName();
-                                if (key.equals("result")) {
-                                    String value = set_status_json_reader.nextString();
-                                    if (value.equals("success")) {
-                                        Activity_qr_scaner.serial_number = "";
-                                        Activity_type_choser.chosen_type = "";
-                                        main_dialog.dismiss();
-                                        startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
-                                    } else {
-                                    }
-                                } else {
-                                    set_status_json_reader.skipValue();
-                                }
-                            }
-                            set_status_json_reader.close();
-                            set_status_connection.disconnect();
-                        } else {
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
+                } catch (IOException e) {
+                    res[0] = 0;
                     e.printStackTrace();
 
                 }
-
-
+            } catch (MalformedURLException e) {
+                res[0] = 0;
+                e.printStackTrace();
             }
-        });
+            return null;
+        }
 
-    }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
 
-    public void ownership_request() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                result[0] = -1;
-                ownership[0] = "1";
-                ownership[1] = "1";
-                String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-                URL ownership_endpoint = null;
-                try {
-                    ownership_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisher?fire_id=" + Activity_qr_scaner.serial_number);
-                    try {
-                        HttpURLConnection ownership_connection = (HttpURLConnection) ownership_endpoint.openConnection();
-                        ownership_connection.setRequestMethod("GET");
-                        ownership_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+            if (check[0] == 1 && res[0] == 1) {
+                System.out.println(value);
+                if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
 
-                        if (ownership_connection.getResponseCode() == 200) {
-                            InputStream ownership_response = ownership_connection.getInputStream();
-                            System.out.println(ownership_response.toString());
-                            String inline="";
-                            Scanner scanner = new Scanner(ownership_endpoint.openStream());
-                            InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
-                            JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
-                            while(scanner.hasNext()){
-                                inline+=scanner.nextLine();
-                                System.out.println(inline);
-                            }
-                            ownership_json_reader.beginObject();
-                            while (ownership_json_reader.hasNext()) {
-                                String key = ownership_json_reader.nextName();
-                                if (key.equals("result")) {
-                                    if (!ownership_json_reader.nextString().equals("success")) {
-                                        result[0] = 0;
-                                    } else {
-                                        result[0] = 1;
-                                    }
-                                } else if (key.equals("data")) {
-                                    ownership_json_reader.beginObject();
-                                    while (ownership_json_reader.hasNext()) {
-                                        String key_2 = ownership_json_reader.nextName();
-
-                                        if (key_2.equals("isFree")) {
-                                            ownership[0] = ownership_json_reader.nextString();
-
-                                        } else if (key_2.equals("userFire")) {
-                                            ownership[1] = ownership_json_reader.nextString();
-
-                                        } else {
-                                            ownership_json_reader.skipValue();
-                                        }
-                                    }
-                                } else {
-                                    ownership_json_reader.skipValue();
-                                }
-                            }
-                            ownership_response.close();
-                            ownership_response_reader.close();
-                            ownership_json_reader.close();
-                            ownership_connection.disconnect();
-                        } else {
-                            result[0] = -1;
-                        }
-                        if (ownership[0].equals("-1") && ownership[1].equals("-1") && result[0] == -1) {
-                            api_error result_error = new api_error();
-                            result_error.dialog_api_error_starter(Activity_qr_scaner.this);
-                        }
-                        if (result[0] == 0) {
-                            dialog_error_existance_starter();
-                        } else if (ownership[0].equals("1") && ownership[1].equals("0") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                            startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
-
-                        } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                            Activity_qr_scaner.this.dialog_error_used_user_starter();
-                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                            Activity_qr_scaner.this.dialog_error_not_connected_starter();
-                        } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
-                            switch (Activity_type_choser.chosen_type) {
-                                case "Ежегодный осмотр": {
-                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
-                                    break;
-                                }
-                                case "Ежеквартальный осмотр": {
-                                    startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
-                                    break;
-                                }
-                                case "Обслуживание": {
-                                    dialog_service_starter("onRepair");
-                                    get_status_request(serial_number, MainActivity.token, "Обслуживание");
-                                    break;
-                                }
-                                case "Заправка": {
-                                    dialog_refile_starter("onRefile");
-                                    get_status_request(serial_number, MainActivity.token, "Заправка");
-                                    break;
-                                }
-                                case "Утилизация": {
-                                    dialog_util_starter();
-                                    break;
-                                }
-                            }
-
-                        } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
-                            dialog_error_used_dif_starter();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (
-                        MalformedURLException e) {
-                    e.printStackTrace();
+                    dialog_service_starter(value);
+                } else {
+                    dialog_refile_starter(value);
                 }
             }
-        });
+            else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
+            }
+        }
+    }
 
+    public class set_status_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            res[0] = 0;
+            check[0] = 0;
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String set_status_post_params = "fire_id=" + serial_number + "&date=" + new Date() + "&type=" + type;
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL set_status_endpoint = null;
+            try {
+
+                set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
+                try {
+                    HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
+                    set_status_connection.setRequestMethod("POST");
+                    set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                    set_status_connection.setDoOutput(true);
+                    OutputStream os = set_status_connection.getOutputStream();
+                    os.write(set_status_post_params.getBytes());
+                    os.flush();
+                    os.close();
+
+                    if (set_status_connection.getResponseCode() == 200) {
+                        InputStream set_status_response = set_status_connection.getInputStream();
+                        InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
+                        JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
+                        res[0] = 1;
+                        set_status_json_reader.beginObject();
+                        while (set_status_json_reader.hasNext()) {
+                            String key = set_status_json_reader.nextName();
+                            if (key.equals("result")) {
+                                value = set_status_json_reader.nextString();
+                                if (value.equals("success")) {
+                                    check[0] = 1;
+                                } else {
+                                    check[0] = 0;
+                                }
+                            } else {
+                                set_status_json_reader.skipValue();
+                            }
+                        }
+                        set_status_json_reader.close();
+                        set_status_connection.disconnect();
+                    } else {
+                        res[0] = 0;
+                    }
+                } catch (IOException e) {
+                    res[0] = 0;
+                    e.printStackTrace();
+                }
+            } catch (MalformedURLException e) {
+                res[0] = 0;
+                e.printStackTrace();
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
+            if (check[0] == 1 && res[0] == 1) {
+                Activity_qr_scaner.serial_number = "";
+                Activity_type_choser.chosen_type = "";
+                startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
+            } else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
+            }
+        }
+    }
+
+
+    public class ownership_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            result[0] = -1;
+            ownership[0] = "-1";
+            ownership[1] = "-1";
+            findViewById(R.id.scaner_progress_layout).setVisibility(GONE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL ownership_endpoint = null;
+            try {
+                ownership_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisher?fire_id=" + Activity_qr_scaner.serial_number);
+                try {
+                    HttpURLConnection ownership_connection = (HttpURLConnection) ownership_endpoint.openConnection();
+                    ownership_connection.setRequestMethod("GET");
+                    ownership_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                    if (ownership_connection.getResponseCode() == 200) {
+                        InputStream ownership_response = ownership_connection.getInputStream();
+                        System.out.println(ownership_response.toString());
+                        String inline = "";
+                        Scanner scanner = new Scanner(ownership_endpoint.openStream());
+                        InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
+                        JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
+                        while (scanner.hasNext()) {
+                            inline += scanner.nextLine();
+                            System.out.println(inline);
+                        }
+                        ownership_json_reader.beginObject();
+                        while (ownership_json_reader.hasNext()) {
+                            String key = ownership_json_reader.nextName();
+                            if (key.equals("result")) {
+                                if (!ownership_json_reader.nextString().equals("success")) {
+                                    result[0] = 0;
+                                } else {
+                                    result[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                ownership_json_reader.beginObject();
+                                while (ownership_json_reader.hasNext()) {
+                                    String key_2 = ownership_json_reader.nextName();
+
+                                    if (key_2.equals("isFree")) {
+                                        ownership[0] = ownership_json_reader.nextString();
+
+                                    } else if (key_2.equals("userFire")) {
+                                        ownership[1] = ownership_json_reader.nextString();
+
+                                    } else {
+                                        ownership_json_reader.skipValue();
+                                    }
+                                }
+                            } else {
+                                ownership_json_reader.skipValue();
+                            }
+                        }
+                        ownership_response.close();
+                        ownership_response_reader.close();
+                        ownership_json_reader.close();
+                        ownership_connection.disconnect();
+                    } else {
+                        result[0] = -1;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (
+                    MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.scaner_progress_layout).setVisibility(GONE);
+            if (ownership[0].equals("-1") && ownership[1].equals("-1") && result[0] == -1) {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
+            }
+            if (result[0] == 0) {
+                dialog_error_existance_starter();
+            } else if (ownership[0].equals("1") && ownership[1].equals("0") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
+
+            } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                Activity_qr_scaner.this.dialog_error_used_user_starter();
+            } else if (ownership[0].equals("1") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                Activity_qr_scaner.this.dialog_error_not_connected_starter();
+            } else if (ownership[0].equals("0") && ownership[1].equals("1") && !Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                switch (Activity_type_choser.chosen_type) {
+                    case "Ежегодный осмотр": {
+                        startActivity(new Intent(Activity_qr_scaner.this, Activity_everyyear_checking.class));
+                        break;
+                    }
+                    case "Ежеквартальный осмотр": {
+                        startActivity(new Intent(Activity_qr_scaner.this, Activity_every_cvartal_checking.class));
+                        break;
+                    }
+                    case "Обслуживание": {
+                        get_status_request get_status = new get_status_request();
+                        get_status.execute();
+                        break;
+                    }
+                    case "Заправка": {
+                        get_status_request get_status = new get_status_request();
+                        get_status.execute();
+                        break;
+                    }
+                    case "Утилизация": {
+                        dialog_util_starter();
+                        break;
+                    }
+                }
+
+            } else if (ownership[0].equals("0") && ownership[1].equals("0")) {
+                dialog_error_used_dif_starter();
+            }
+        }
     }
 
 }
