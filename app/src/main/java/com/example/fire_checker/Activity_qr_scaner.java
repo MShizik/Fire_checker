@@ -386,13 +386,14 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
                             while(scanner.hasNext()){
                                 inline+=scanner.nextLine();
+                                System.out.println(inline);
                             }
-                                                     /*get_status_json_reader.beginObject();
+                            get_status_json_reader.beginObject();
                             while (get_status_json_reader.hasNext()) {
                                 String key = get_status_json_reader.nextName();
-                                                          if (key.equals("current_status")) {
+                                if (key.equals("current_status")) {
                                     String value = get_status_json_reader.nextString();
-                                                                    if (m_type.equals("Обслуживание")) {
+                                    if (m_type.equals("Обслуживание")) {
                                         dialog_service_starter(value);
                                     } else {
                                         dialog_refile_starter(value);
@@ -401,10 +402,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                 }
                             }
 
-                       */
+
                         } else {
-                            api_error result_error = new api_error();
-                            result_error.dialog_api_error_starter();
                         }
                     } catch (IOException e) {
 
@@ -448,16 +447,14 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             set_status_json_reader.beginObject();
                             while (set_status_json_reader.hasNext()) {
                                 String key = set_status_json_reader.nextName();
-                                                          if (key.equals("result")) {
+                                if (key.equals("result")) {
                                     String value = set_status_json_reader.nextString();
-                                                                    if (value.equals("success")) {
+                                    if (value.equals("success")) {
                                         Activity_qr_scaner.serial_number = "";
                                         Activity_type_choser.chosen_type = "";
                                         main_dialog.dismiss();
                                         startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
                                     } else {
-                                        api_error result_error = new api_error();
-                                        result_error.dialog_api_error_starter();
                                     }
                                 } else {
                                     set_status_json_reader.skipValue();
@@ -466,8 +463,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             set_status_json_reader.close();
                             set_status_connection.disconnect();
                         } else {
-                            api_error result_error = new api_error();
-                            result_error.dialog_api_error_starter();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -501,8 +496,15 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
                         if (ownership_connection.getResponseCode() == 200) {
                             InputStream ownership_response = ownership_connection.getInputStream();
+                            System.out.println(ownership_response.toString());
+                            String inline="";
+                            Scanner scanner = new Scanner(ownership_endpoint.openStream());
                             InputStreamReader ownership_response_reader = new InputStreamReader(ownership_response, StandardCharsets.UTF_8);
                             JsonReader ownership_json_reader = new JsonReader(ownership_response_reader);
+                            while(scanner.hasNext()){
+                                inline+=scanner.nextLine();
+                                System.out.println(inline);
+                            }
                             ownership_json_reader.beginObject();
                             while (ownership_json_reader.hasNext()) {
                                 String key = ownership_json_reader.nextName();
@@ -531,7 +533,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     ownership_json_reader.skipValue();
                                 }
                             }
-
+                            ownership_response.close();
+                            ownership_response_reader.close();
                             ownership_json_reader.close();
                             ownership_connection.disconnect();
                         } else {
@@ -539,11 +542,11 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         }
                         if (ownership[0].equals("-1") && ownership[1].equals("-1") && result[0] == -1) {
                             api_error result_error = new api_error();
-                            result_error.dialog_api_error_starter();
+                            result_error.dialog_api_error_starter(Activity_qr_scaner.this);
                         }
                         if (result[0] == 0) {
                             dialog_error_existance_starter();
-                        } else if (ownership[0].equals("1") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
+                        } else if (ownership[0].equals("1") && ownership[1].equals("0") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
                             startActivity(new Intent(Activity_qr_scaner.this, Activity_first_checking.class));
 
                         } else if (ownership[0].equals("0") && ownership[1].equals("1") && Activity_type_choser.chosen_type.equals("Первоначальный осмотр")) {
@@ -562,12 +565,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                 }
                                 case "Обслуживание": {
                                     dialog_service_starter("onRepair");
-                                    //get_status_request(serial_number, MainActivity.token, "Обслуживание");
+                                    get_status_request(serial_number, MainActivity.token, "Обслуживание");
                                     break;
                                 }
                                 case "Заправка": {
                                     dialog_refile_starter("onRefile");
-                                    //get_status_request(serial_number, MainActivity.token, "Заправка");
+                                    get_status_request(serial_number, MainActivity.token, "Заправка");
                                     break;
                                 }
                                 case "Утилизация": {

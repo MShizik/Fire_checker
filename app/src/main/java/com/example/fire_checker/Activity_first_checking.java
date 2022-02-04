@@ -126,8 +126,6 @@ public class Activity_first_checking extends AppCompatActivity {
                                 if (value.equals("success")) {
                                     result[0] = 1;
                                 } else {
-                                    api_error result_error = new api_error();
-                                    result_error.dialog_api_error_starter();
                                     break;
                                 }
                             } else if (key.equals("data")) {
@@ -147,8 +145,6 @@ public class Activity_first_checking extends AppCompatActivity {
                         update_check_json_reader.close();
                         update_check_connection.disconnect();
                     } else {
-                        api_error result_error = new api_error();
-                        result_error.dialog_api_error_starter();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -164,13 +160,18 @@ public class Activity_first_checking extends AppCompatActivity {
             super.onPostExecute(aVoid);
             first_progress_layout.setVisibility(View.GONE);
             Activity_qr_scaner.serial_number = "";
-            if (check[0] == 1) {
+            if (check[0] == 1 && result[0]==1) {
                 startActivity(new Intent(Activity_first_checking.this, Activity_qr_scaner.class));
             }
-            else{
+            else if (check[0]==0 && result[0]==1){
                 check_error check_error= new check_error();
                 check_error.dialog_check_error_starter();
             }
+            else{
+                api_error error = new api_error();
+                error.dialog_api_error_starter(Activity_first_checking.this);
+            }
+
         }
 
 
