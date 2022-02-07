@@ -211,9 +211,11 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                                 update_check_json_reader.beginObject();
                                 while (update_check_json_reader.hasNext()){
                                     String key_2 = update_check_json_reader.nextName();
-                                    if (key_2.equals("check_succeed")){
-                                        check[0]=1;
-                                        break;
+                                    if (key_2.equals("check_succed")){
+                                        if (update_check_json_reader.nextInt()==1) {
+                                            check[0] = 1;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -239,7 +241,8 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
             cvartal_progress_layout_obj.setVisibility(View.GONE);
             if(check[0]==1 && result[0]==1) {
                 Activity_qr_scaner.serial_number = "";
-                startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_qr_scaner.class));
+                Activity_type_choser.chosen_type="";
+                startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
             }
             else if (check[0]==0 && result[0]==1){
                 check_error check_er=new check_error();

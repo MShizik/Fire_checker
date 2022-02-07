@@ -296,11 +296,16 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                                 if (value.equals("success")) {
                                     result[0] = 1;
                                 }
+                                else {
+                                    result[0]=0;
+                                    check[0]=0;
+                                    break;
+                                }
                             } else if (key.equals("data")) {
                                 update_check_json_reader.beginObject();
                                 while (update_check_json_reader.hasNext()) {
                                     String key_2 = update_check_json_reader.nextName();
-                                    if (key_2.equals("check_succeed")) {
+                                    if (key_2.equals("check_succed")) {
                                         if (update_check_json_reader.nextInt() == 1) {
                                             check[0] = 1;
                                         }
@@ -333,7 +338,8 @@ public class Activity_everyyear_checking extends AppCompatActivity {
         year_progress_layout_obj.setVisibility(View.GONE);
         if (check[0] == 1 && result[0] == 1) {
             Activity_qr_scaner.serial_number = "";
-            startActivity(new Intent(Activity_everyyear_checking.this, Activity_qr_scaner.class));
+            Activity_type_choser.chosen_type="";
+            startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
         } else if (check[0] == 0 && result[0] == 1) {
             check_error check_error = new check_error();
             check_error.dialog_check_error_starter(Activity_everyyear_checking.this);
