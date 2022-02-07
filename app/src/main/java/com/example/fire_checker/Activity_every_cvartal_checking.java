@@ -174,7 +174,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
             String shlang = cvartal_shlang_problems_result.toString();
             String bar= cvartal_bar_problems_result.toString();
             String token = MainActivity.token;
-            String update_check_post_params = "fire_id=" + serial_number +"&appearence="+appearence +"&cover="+cover +"&instruction="+instruction+"&fuse="+fuse+"&manometr" +
+            String update_check_post_params = "fire_id=" + serial_number +"&appearence="+appearence +"&cover="+cover +"&instruction="+instruction+"&fuse="+fuse+"&manometr=" +
                     manometr+"&label="+label+"&weight="+weight+"&place="+place+"&shlang="+shlang+"&bar="+bar;
             String PROPERTY_AUTH = "Bearer " + token;
             URL update_check_endpoint = null;
@@ -243,7 +243,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
             }
             else if (check[0]==0 && result[0]==1){
                 check_error check_er=new check_error();
-                check_er.dialog_check_error_starter();
+                check_er.dialog_check_error_starter(Activity_every_cvartal_checking.this);
             }
             else {
                 api_error result_error=new api_error();
@@ -322,7 +322,7 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
             }
             else if (check[0]==0 && result[0]==1){
                 check_error check_er=new check_error();
-                check_er.dialog_check_error_starter();
+                check_er.dialog_check_error_starter(Activity_every_cvartal_checking.this);
             }
             else {
                 api_error result_error=new api_error();

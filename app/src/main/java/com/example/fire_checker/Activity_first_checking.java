@@ -96,7 +96,7 @@ public class Activity_first_checking extends AppCompatActivity {
             String weight = first_weight_problems_result.toString();
             String shlang = first_shlang_problems_result.toString();
             String bar = first_bar_problems_result.toString();
-            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr" +
+            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr=" +
                     manometr + "&label=" + label + "&weight=" + weight + "&shlang=" + shlang + "&bar=" + bar;
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL update_check_endpoint = null;
@@ -165,7 +165,7 @@ public class Activity_first_checking extends AppCompatActivity {
             }
             else if (check[0]==0 && result[0]==1){
                 check_error check_error= new check_error();
-                check_error.dialog_check_error_starter();
+                check_error.dialog_check_error_starter(Activity_first_checking.this);
             }
             else{
                 api_error error = new api_error();
