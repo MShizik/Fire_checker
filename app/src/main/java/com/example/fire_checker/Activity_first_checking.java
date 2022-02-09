@@ -159,8 +159,8 @@ public class Activity_first_checking extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             first_progress_layout.setVisibility(View.GONE);
-            Activity_qr_scaner.serial_number = "";
             if (check[0] == 1 && result[0]==1) {
+                Activity_qr_scaner.serial_number = "";
                 startActivity(new Intent(Activity_first_checking.this, Activity_qr_scaner.class));
             }
             else if (check[0]==0 && result[0]==1){

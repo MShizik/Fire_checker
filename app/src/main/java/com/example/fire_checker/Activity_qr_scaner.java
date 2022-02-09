@@ -196,7 +196,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 Button dialog_util_confirmation_btn = (Button) dialog_util.findViewById(R.id.dialog_utilization_util_btn);
                 dialog_util_confirmation_btn.setOnClickListener(v -> {
                     Date current_date = new Date();
-                    type = "decommissioned";
+                    type = "Утилизация";
                     set_status_request set_status = new set_status_request();
                     set_status.execute();
                     dialog_util.dismiss();
@@ -208,7 +208,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if (status.equals("onRefile")) {
+        if (status.equals("Обслуживание")) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -219,7 +219,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     Button dialog_get_from_refile_confirmation_btn = (Button) dialog_get_from_refile.findViewById(R.id.dialog_get_from_refile_btn);
                     dialog_get_from_refile_confirmation_btn.setOnClickListener(v -> {
                         Date current_date = new Date();
-                        type = "refiled";
+                        type = "В эксплуатации";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                         dialog_get_from_refile.dismiss();
@@ -239,7 +239,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
                     Button dialog_send_to_refile_confirmation_btn = (Button) dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
-                        type = "onRefile";
+                        type = "Обслуживание";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                         dialog_send_to_refile.dismiss();
@@ -253,7 +253,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if (status.equals("onRepair") || status.equals("onRefile")) {
+        if (status.equals("Обслуживание")) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -274,11 +274,11 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_service_send_btn.setOnClickListener(v -> {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
-                            type = "refiled";
+                            type = "В эксплуатации";
                         } else if (service_chosen_type.equals("Принять с ремонта")) {
-                            type = "repaired";
+                            type = "В эксплуатации";
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
-                            type = "decommissioned";
+                            type = "Утилизация";
                         }
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
@@ -330,11 +330,11 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_on_service_send_btn.setOnClickListener(v -> {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
-                            type = "onRefile";
+                            type = "Обслуживание";
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
-                            type = "onRepair";
+                            type = "Обслуживание";
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
-                            type = "decommissioned";
+                            type = "Утилизация";
                         }
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
@@ -630,13 +630,15 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         break;
                     }
                     case "Обслуживание": {
-                        get_status_request get_status = new get_status_request();
-                        get_status.execute();
+                        //get_status_request get_status = new get_status_request();
+                        //get_status.execute();
+                        dialog_service_starter("В эксплуатации");
                         break;
                     }
                     case "Заправка": {
-                        get_status_request get_status = new get_status_request();
-                        get_status.execute();
+                        //get_status_request get_status = new get_status_request();
+                        //get_status.execute();
+                        dialog_refile_starter("Обслуживание");
                         break;
                     }
                     case "Утилизация": {
