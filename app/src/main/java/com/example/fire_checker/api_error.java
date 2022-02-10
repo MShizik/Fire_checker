@@ -1,5 +1,6 @@
 package com.example.fire_checker;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,11 +10,12 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class api_error extends AppCompatActivity {
-    public void dialog_api_error_starter(){
+    public void dialog_api_error_starter(Activity context){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Dialog dialog_error_api = new Dialog(getApplicationContext());
+                Dialog dialog_error_api;
+                dialog_error_api = new Dialog(context);
                 dialog_error_api.getWindow().setBackgroundDrawable(new ColorDrawable((Color.TRANSPARENT)));
                 dialog_error_api.setContentView(R.layout.dialog_error_api);
                 Button dialog_error_api_back_btn = (Button) dialog_error_api.findViewById(R.id.dialog_error_api_btn);

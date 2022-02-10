@@ -96,7 +96,7 @@ public class Activity_first_checking extends AppCompatActivity {
             String weight = first_weight_problems_result.toString();
             String shlang = first_shlang_problems_result.toString();
             String bar = first_bar_problems_result.toString();
-            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr" +
+            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr=" +
                     manometr + "&label=" + label + "&weight=" + weight + "&shlang=" + shlang + "&bar=" + bar;
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL update_check_endpoint = null;
@@ -126,8 +126,6 @@ public class Activity_first_checking extends AppCompatActivity {
                                 if (value.equals("success")) {
                                     result[0] = 1;
                                 } else {
-                                    api_error result_error = new api_error();
-                                    result_error.dialog_api_error_starter();
                                     break;
                                 }
                             } else if (key.equals("data")) {
@@ -147,8 +145,6 @@ public class Activity_first_checking extends AppCompatActivity {
                         update_check_json_reader.close();
                         update_check_connection.disconnect();
                     } else {
-                        api_error result_error = new api_error();
-                        result_error.dialog_api_error_starter();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -163,14 +159,19 @@ public class Activity_first_checking extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             first_progress_layout.setVisibility(View.GONE);
-            Activity_qr_scaner.serial_number = "";
-            if (check[0] == 1) {
+            if (check[0] == 1 && result[0]==1) {
+                Activity_qr_scaner.serial_number = "";
                 startActivity(new Intent(Activity_first_checking.this, Activity_qr_scaner.class));
             }
-            else{
+            else if (check[0]==0 && result[0]==1){
                 check_error check_error= new check_error();
-                check_error.dialog_check_error_starter();
+                check_error.dialog_check_error_starter(Activity_first_checking.this);
             }
+            else{
+                api_error error = new api_error();
+                error.dialog_api_error_starter(Activity_first_checking.this);
+            }
+
         }
 
 

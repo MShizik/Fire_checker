@@ -78,25 +78,26 @@ public class Activity_everyyear_checking extends AppCompatActivity {
         year_send_btn = findViewById(R.id.year_send_btn);
         year_back_btn = findViewById(R.id.year_back_btn);
         year_progress_layout_obj = findViewById(R.id.year_progress_layout);
-        year_progress_bar_obj=findViewById(R.id.year_progress_bar);
+        year_progress_bar_obj = findViewById(R.id.year_progress_bar);
 
         year_progress_layout_obj.setVisibility(View.GONE);
 
         serial_number_obj.setText(Activity_qr_scaner.serial_number);
 
         year_send_btn.setOnClickListener(v -> {
-            year_hard_problems_result=year_hard_problems_obj.isChecked()?1:0;
-            year_appearence_problems_result=year_appearence_problems_obj.isChecked()?1:0;
-            year_instruction_problems_result=year_instruction_problems_obj.isChecked()?1:0;
-            year_fuse_problems_result=year_fuse_problems_obj.isChecked()?1:0;
-            year_manometr_problems_result=year_manometr_problems_obj.isChecked()?1:0;
-            year_label_problems_result=year_label_problems_obj.isChecked()?1:0;
-            year_weight_problems_result=year_weight_problems_obj.isChecked()?1:0;
-            year_place_problems_result=year_place_problems_obj.isChecked()?1:0;
-            year_shlang_problems_result=year_shlang_problems_obj.isChecked()?1:0;
-            year_bar_problems_result = year_bar_problems_obj.isChecked()?1:0;
-            year_filters_problems_result =year_filters_problems_obj.isChecked()?1:0;
-            year_otb_problems_result=year_otb_problems_obj.isChecked()?1:0;
+            year_hard_problems_result = year_hard_problems_obj.isChecked() ? 1 : 0;
+            year_appearence_problems_result = year_appearence_problems_obj.isChecked() ? 1 : 0;
+            year_instruction_problems_result = year_instruction_problems_obj.isChecked() ? 1 : 0;
+            year_fuse_problems_result = year_fuse_problems_obj.isChecked() ? 1 : 0;
+            year_manometr_problems_result = year_manometr_problems_obj.isChecked() ? 1 : 0;
+            year_label_problems_result = year_label_problems_obj.isChecked() ? 1 : 0;
+            year_weight_problems_result = year_weight_problems_obj.isChecked() ? 1 : 0;
+            year_place_problems_result = year_place_problems_obj.isChecked() ? 1 : 0;
+            year_shlang_problems_result = year_shlang_problems_obj.isChecked() ? 1 : 0;
+            year_bar_problems_result = year_bar_problems_obj.isChecked() ? 1 : 0;
+            year_filters_problems_result = year_filters_problems_obj.isChecked() ? 1 : 0;
+            year_otb_problems_result = year_otb_problems_obj.isChecked() ? 1 : 0;
+            year_utechka_problems_result = 0;
             dialog_service_and_review_starter();
         });
 
@@ -106,7 +107,8 @@ public class Activity_everyyear_checking extends AppCompatActivity {
             startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
         });
     }
-    protected void dialog_service_and_review_starter(){
+
+    protected void dialog_service_and_review_starter() {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -124,19 +126,22 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                 dialog_review_year.setCancelable(false);
 
                 dialog_review_send_btn.setOnClickListener(v -> {
-                    if (year_type_chosen.equals("Проверка пройдена")){
-                        everyyear_check_request check_request=new everyyear_check_request();
+                    if (year_type_chosen.equals("Проверка пройдена")) {
+                        everyyear_check_request check_request = new everyyear_check_request();
                         check_request.execute();
                         dialog_review_year.dismiss();
-                    }
-                    else if(year_type_chosen.equals("Отправить на перезаправку")){
-                        set_status_request("onRefile",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_year );
-                    }
-                    else if (year_type_chosen.equals("Отправить в ремонт")) {
-                        set_status_request("onRepair",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_year );
-                    }
-                    else if (year_type_chosen.equals("Вывести из эксплуатации")) {
-                        set_status_request("decommissioned",new Date(), Activity_qr_scaner.serial_number, MainActivity.token, dialog_review_year );
+                    } else if (year_type_chosen.equals("Отправить на перезаправку")) {
+                        year_type_chosen = "onRefile";
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                    } else if (year_type_chosen.equals("Отправить в ремонт")) {
+                        year_type_chosen = "onRepair";
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
+                    } else if (year_type_chosen.equals("Вывести из эксплуатации")) {
+                        year_type_chosen = "onRepair";
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
                     }
                 });
 
@@ -158,86 +163,97 @@ public class Activity_everyyear_checking extends AppCompatActivity {
         });
     }
 
-    protected void set_status_request(String type, Date date, String serial_number, String token, Dialog main_dialog){
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                String set_status_post_params = "fire_id=" + serial_number + "&date=" + date + "&type=" + type;
-                String PROPERTY_AUTH = "Bearer " + token;
-                URL set_status_endpoint = null;
-                try {
-                    set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
-                    try {
-                        HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
-                        set_status_connection.setRequestMethod("POST");
-                        set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-
-                        set_status_connection.setDoOutput(true);
-                        OutputStream os = set_status_connection.getOutputStream();
-                        os.write(set_status_post_params.getBytes());
-                        os.flush();
-                        os.close();
-
-                        if (set_status_connection.getResponseCode() == 200) {
-                                                        InputStream set_status_response = set_status_connection.getInputStream();
-                            InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
-                            JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
-                            set_status_json_reader.beginObject();
-                            while (set_status_json_reader.hasNext()) {
-                                String key = set_status_json_reader.nextName();
-                                                               if (key.equals("result")) {
-                                    String value = set_status_json_reader.nextString();
-
-                                    if (value.equals("success")) {
-                                        Activity_qr_scaner.serial_number = "";
-                                        Activity_type_choser.chosen_type = "";
-                                        main_dialog.dismiss();
-                                        startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
-                                    }
-                                    else{
-                                        api_error result_error=new api_error();
-                                        result_error.dialog_api_error_starter();
-                                    }
-                                } else {
-                                    set_status_json_reader.skipValue();
-                                }
-                            }
-                            set_status_json_reader.close();
-                            set_status_connection.disconnect();
-                        } else {
-                            api_error result_error=new api_error();
-                            result_error.dialog_api_error_starter();
-                        }
-                        if (result[0]==1 && check[0]==1){
-                            main_dialog.dismiss();
-                            Activity_qr_scaner.serial_number = "";
-                            Activity_type_choser.chosen_type = "";
-                            startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-
-                }
-
-
-            }
-        });
-
-    }
-    public class everyyear_check_request extends AsyncTask<Void,Void,Void>{
+    public class set_status_request extends AsyncTask<Void, Void, Void> {
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             super.onPreExecute();
+            result[0] = 0;
+            check[0] = 0;
             year_progress_layout_obj.setVisibility(View.VISIBLE);
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
-            String serial_number =Activity_qr_scaner.serial_number;
+            String set_status_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + new Date() + "&type=" + year_type_chosen.toString();
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL set_status_endpoint = null;
+            try {
+                set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
+                try {
+                    HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
+                    set_status_connection.setRequestMethod("POST");
+                    set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                    set_status_connection.setDoOutput(true);
+                    OutputStream os = set_status_connection.getOutputStream();
+                    os.write(set_status_post_params.getBytes());
+                    os.flush();
+                    os.close();
+
+                    if (set_status_connection.getResponseCode() == 200) {
+                        result[0] = 1;
+                        InputStream set_status_response = set_status_connection.getInputStream();
+                        InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
+                        JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
+                        set_status_json_reader.beginObject();
+                        while (set_status_json_reader.hasNext()) {
+                            String key = set_status_json_reader.nextName();
+                            if (key.equals("result")) {
+                                String value = set_status_json_reader.nextString();
+                                if (value.equals("success")) {
+                                    check[0] = 1;
+                                } else {
+                                    check[0] = 0;
+                                    break;
+                                }
+                            } else {
+                                set_status_json_reader.skipValue();
+                            }
+                        }
+                        set_status_json_reader.close();
+                        set_status_connection.disconnect();
+                    } else {
+                        result[0] = 0;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            year_progress_layout_obj.setVisibility(View.GONE);
+            if (check[0] == 1 && result[0] == 1) {
+                Activity_qr_scaner.serial_number = "";
+                Activity_type_choser.chosen_type = "";
+                startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
+            } else if (check[0] == 0 && result[0] == 1) {
+                check_error check_er = new check_error();
+                check_er.dialog_check_error_starter(Activity_everyyear_checking.this);
+            } else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_everyyear_checking.this);
+            }
+        }
+    }
+
+    public class everyyear_check_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            result[0] = 0;
+            check[0] = 0;
+            year_progress_layout_obj.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String serial_number = Activity_qr_scaner.serial_number;
             String appearence = year_appearence_problems_result.toString();
             String cover = year_hard_problems_result.toString();
             String instruction = year_instruction_problems_result.toString();
@@ -247,16 +263,16 @@ public class Activity_everyyear_checking extends AppCompatActivity {
             String place = year_place_problems_result.toString();
             String weight = year_weight_problems_result.toString();
             String shlang = year_shlang_problems_result.toString();
-            String bar= year_bar_problems_result.toString();
+            String bar = year_bar_problems_result.toString();
             String OTB = year_otb_problems_result.toString();
             String utechka = year_utechka_problems_result.toString();
             String token = MainActivity.token;
-            String update_check_post_params = "fire_id=" + serial_number +"&appearence="+appearence +"&cover="+cover +"&instruction="+instruction+"&fuse="+fuse+"&manometr" +
-                    manometr+"&label="+label+"&weight="+weight+"&place="+place+"&shlang="+shlang+"&bar="+bar+"&OTB="+ OTB +"&utechka="+utechka;
+            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr=" +
+                    manometr + "&label=" + label + "&weight=" + weight + "&place=" + place + "&shlang=" + shlang + "&bar=" + bar + "&OTB=" + OTB + "&utechka=" + utechka;
             String PROPERTY_AUTH = "Bearer " + token;
             URL update_check_endpoint = null;
             try {
-                update_check_endpoint = new URL("http://194.67.55.58:8080/api/anualCheck");
+                update_check_endpoint = new URL("http://194.67.55.58:8080/api/annualCheck");
                 try {
                     HttpURLConnection update_check_connection = (HttpURLConnection) update_check_endpoint.openConnection();
                     update_check_connection.setRequestMethod("POST");
@@ -278,57 +294,60 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                             if (key.equals("result")) {
                                 String value = update_check_json_reader.nextString();
                                 if (value.equals("success")) {
-                                    result[0] =1;
+                                    result[0] = 1;
                                 }
-                                else if (key.equals("data")) {
-                                    update_check_json_reader.beginObject();
-                                    while (update_check_json_reader.hasNext()) {
-                                        String key_2 = update_check_json_reader.nextName();
-                                        if (key_2.equals("check_succed")) {
-                                            if (update_check_json_reader.nextInt() == 1) {
-                                                check[0] = 1;
-                                            }
+                                else {
+                                    result[0]=0;
+                                    check[0]=0;
+                                    break;
+                                }
+                            } else if (key.equals("data")) {
+                                update_check_json_reader.beginObject();
+                                while (update_check_json_reader.hasNext()) {
+                                    String key_2 = update_check_json_reader.nextName();
+                                    if (key_2.equals("check_succed")) {
+                                        if (update_check_json_reader.nextInt() == 1) {
+                                            check[0] = 1;
                                         }
                                     }
                                 }
-                                else {
-                                    api_error api_error = new api_error();
-                                    api_error.dialog_api_error_starter();
-                                }
-                            }
-                            else {
+                            } else {
                                 update_check_json_reader.skipValue();
                             }
                         }
-                        update_check_json_reader.close();
-                        update_check_connection.disconnect();
-                    } else {
-                        api_error api_error = new api_error();
-                        api_error.dialog_api_error_starter();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    update_check_json_reader.close();
+                    update_check_connection.disconnect();
+                } else{
 
                 }
-            } catch (MalformedURLException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
+            }
+        } catch(
+        MalformedURLException e)
 
-            }
-            return null;
+        {
+            e.printStackTrace();
         }
-        @Override
-        protected void onPostExecute(Void aVoid){
-            super.onPostExecute(aVoid);
-            year_progress_layout_obj.setVisibility(View.GONE);
-            if (check[0]==1){
-                Activity_qr_scaner.serial_number="";
-                startActivity(new Intent(Activity_everyyear_checking.this, Activity_qr_scaner.class));
-            }
-            else{
-                check_error check_error=new check_error();
-                check_error.dialog_check_error_starter();
-            }
+            return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        year_progress_layout_obj.setVisibility(View.GONE);
+        if (check[0] == 1 && result[0] == 1) {
+            Activity_qr_scaner.serial_number = "";
+            Activity_type_choser.chosen_type="";
+            startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
+        } else if (check[0] == 0 && result[0] == 1) {
+            check_error check_error = new check_error();
+            check_error.dialog_check_error_starter(Activity_everyyear_checking.this);
+        } else {
+            api_error error = new api_error();
+            error.dialog_api_error_starter(Activity_everyyear_checking.this);
         }
     }
+}
 
 }
