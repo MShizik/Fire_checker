@@ -113,18 +113,18 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                     }
                     else if(cvartal_type_chosen.equals("Отправить на перезаправку")){
                         dialog_review_cvartal.dismiss();
-                        cvartal_type_chosen="onRefile";
+                        cvartal_type_chosen="требуется перезаправка";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                     }
                     else if (cvartal_type_chosen.equals("Отправить в ремонт")) {
-                        cvartal_type_chosen="onRepair";
+                        cvartal_type_chosen="требуется ремонт";
                         dialog_review_cvartal.dismiss();
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                     }
                     else if (cvartal_type_chosen.equals("Вывести из эксплуатации")) {
-                        cvartal_type_chosen="Decomissioned";
+                        cvartal_type_chosen="Утилизация";
                         dialog_review_cvartal.dismiss();
                         set_status_request set_status = new set_status_request();
                         set_status.execute();

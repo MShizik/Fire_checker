@@ -239,7 +239,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile.setContentView(R.layout.dialog_send_to_refile);
                     Button dialog_send_to_refile_confirmation_btn = (Button) dialog_send_to_refile.findViewById(R.id.dialog_send_to_refile_btn);
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
-                        type = "Обслуживание";
+                        type = "требуется перезаправка";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                         dialog_send_to_refile.dismiss();
@@ -330,9 +330,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_on_service_send_btn.setOnClickListener(v -> {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
-                            type = "Обслуживание";
+                            type = "требуется перезаправка";
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
-                            type = "Обслуживание";
+                            type = "требуется ремонт";
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
                             type = "Утилизация";
                         }
@@ -638,7 +638,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     case "Заправка": {
                         //get_status_request get_status = new get_status_request();
                         //get_status.execute();
-                        dialog_refile_starter("Обслуживание");
+                        dialog_refile_starter("В эксплуатации");
                         break;
                     }
                     case "Утилизация": {

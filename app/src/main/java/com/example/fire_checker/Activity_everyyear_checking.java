@@ -131,15 +131,15 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                         check_request.execute();
                         dialog_review_year.dismiss();
                     } else if (year_type_chosen.equals("Отправить на перезаправку")) {
-                        year_type_chosen = "onRefile";
+                        year_type_chosen = "требуется перезаправка";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                     } else if (year_type_chosen.equals("Отправить в ремонт")) {
-                        year_type_chosen = "onRepair";
+                        year_type_chosen = "требуется ремонт";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                     } else if (year_type_chosen.equals("Вывести из эксплуатации")) {
-                        year_type_chosen = "onRepair";
+                        year_type_chosen = "Утилизация";
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
                     }
