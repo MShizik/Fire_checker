@@ -86,6 +86,8 @@ public class Activity_first_checking extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            result[0]=0;
+            check[0]=0;
             String serial_number = Activity_qr_scaner.serial_number;
             String appearence = first_appearence_problems_result.toString();
             String cover = first_hard_problems_result.toString();
@@ -96,8 +98,7 @@ public class Activity_first_checking extends AppCompatActivity {
             String weight = first_weight_problems_result.toString();
             String shlang = first_shlang_problems_result.toString();
             String bar = first_bar_problems_result.toString();
-            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr=" +
-                    manometr + "&label=" + label + "&weight=" + weight + "&shlang=" + shlang + "&bar=" + bar;
+            String update_check_post_params = "fire_id=" + serial_number + "&appearence=" + appearence + "&cover=" + cover + "&instruction=" + instruction + "&fuse=" + fuse + "&manometr=" + manometr + "&label=" + label + "&weight=" + weight + "&shlang=" + shlang + "&bar=" + bar;
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL update_check_endpoint = null;
             try {
@@ -112,7 +113,7 @@ public class Activity_first_checking extends AppCompatActivity {
                     os.write(update_check_post_params.getBytes());
                     os.flush();
                     os.close();
-
+                    System.out.println(update_check_connection.getResponseCode());
                     if (update_check_connection.getResponseCode() == 200) {
                         InputStream update_check_response = update_check_connection.getInputStream();
                         InputStreamReader update_check_response_reader = new InputStreamReader(update_check_response, StandardCharsets.UTF_8);
@@ -120,7 +121,6 @@ public class Activity_first_checking extends AppCompatActivity {
                         update_check_json_reader.beginObject();
                         while (update_check_json_reader.hasNext()) {
                             String key = update_check_json_reader.nextName();
-
                             if (key.equals("result")) {
                                 String value = update_check_json_reader.nextString();
                                 if (value.equals("success")) {
