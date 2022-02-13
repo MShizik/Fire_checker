@@ -21,10 +21,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 public class Activity_first_checking extends AppCompatActivity {
     ProgressBar first_progress_bar_obj;
     ConstraintLayout first_progress_layout;
+    String first_chosen_type;
     TextView serial_number_obj;
     CheckBox first_hard_problems_obj, first_appearence_problems_obj, first_instruction_problems_obj, first_fuse_problems_obj, first_manometr_problems_obj, first_label_problems_obj, first_weight_problems_obj, first_shlang_problems_obj, first_bar_problems_obj;
     Integer first_hard_problems_result = 0, first_appearence_problems_result = 0, first_instruction_problems_result = 0, first_fuse_problems_result = 0, first_manometr_problems_result = 0, first_label_problems_result = 0, first_weight_problems_result = 0, first_shlang_problems_result = 0, first_bar_problems_result = 0;
@@ -51,7 +53,7 @@ public class Activity_first_checking extends AppCompatActivity {
         first_bar_problems_obj = findViewById(R.id.first_bar_problems_check_box);
         first_progress_bar_obj =findViewById(R.id.first_progress_bar);
         first_progress_layout = findViewById(R.id.first_progress_layout);
-
+        first_chosen_type = MainActivity.expluatation;
         first_progress_layout.setVisibility(View.GONE);
         serial_number_obj.setText(Activity_qr_scaner.serial_number);
 
@@ -160,8 +162,8 @@ public class Activity_first_checking extends AppCompatActivity {
             super.onPostExecute(aVoid);
             first_progress_layout.setVisibility(View.GONE);
             if (check[0] == 1 && result[0]==1) {
-                Activity_qr_scaner.serial_number = "";
-                startActivity(new Intent(Activity_first_checking.this, Activity_qr_scaner.class));
+                set_status_request set_status = new set_status_request();
+                set_status.execute();
             }
             else if (check[0]==0 && result[0]==1){
                 check_error check_error= new check_error();
@@ -175,5 +177,85 @@ public class Activity_first_checking extends AppCompatActivity {
         }
 
 
+    }
+
+    public class set_status_request extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            result[0]=0;
+            check[0]=0;
+            first_progress_layout.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String set_status_post_params = "fire_id=" + Activity_qr_scaner.serial_number + "&date=" + new Date() + "&type=" + first_chosen_type.toString();
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL set_status_endpoint = null;
+            try {
+                set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
+                try {
+                    HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
+                    set_status_connection.setRequestMethod("POST");
+                    set_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+
+                    set_status_connection.setDoOutput(true);
+                    OutputStream os = set_status_connection.getOutputStream();
+                    os.write(set_status_post_params.getBytes());
+                    os.flush();
+                    os.close();
+
+                    if (set_status_connection.getResponseCode() == 200) {
+                        result[0]=1;
+                        InputStream set_status_response = set_status_connection.getInputStream();
+                        InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
+                        JsonReader set_status_json_reader = new JsonReader(set_status_response_reader);
+                        set_status_json_reader.beginObject();
+                        while (set_status_json_reader.hasNext()) {
+                            String key = set_status_json_reader.nextName();
+                            if (key.equals("result")) {
+                                String value = set_status_json_reader.nextString();
+                                if (value.equals("success")) {
+                                    check[0]=1;
+                                } else {
+                                    check[0]=0;
+                                    break;
+                                }
+                            } else {
+                                set_status_json_reader.skipValue();
+                            }
+                        }
+                        set_status_json_reader.close();
+                        set_status_connection.disconnect();
+                    } else {
+                        result[0]=0;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid){
+            super.onPostExecute(aVoid);
+            first_progress_layout.setVisibility(View.GONE);
+            if(check[0]==1 && result[0]==1) {
+                Activity_qr_scaner.serial_number = "";
+                Activity_type_choser.chosen_type = "";
+                startActivity(new Intent(Activity_first_checking.this, Activity_type_choser.class));
+            }
+            else if (check[0]==0 && result[0]==1){
+                check_error check_er=new check_error();
+                check_er.dialog_check_error_starter(Activity_first_checking.this);
+            }
+            else {
+                api_error result_error=new api_error();
+                result_error.dialog_api_error_starter(Activity_first_checking.this);
+            }
+        }
     }
 }

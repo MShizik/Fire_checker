@@ -337,9 +337,9 @@ public class Activity_everyyear_checking extends AppCompatActivity {
         super.onPostExecute(aVoid);
         year_progress_layout_obj.setVisibility(View.GONE);
         if (check[0] == 1 && result[0] == 1) {
-            Activity_qr_scaner.serial_number = "";
-            Activity_type_choser.chosen_type="";
-            startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
+            year_type_chosen = MainActivity.expluatation;
+            set_status_request set_status =new set_status_request();
+            set_status.execute();
         } else if (check[0] == 0 && result[0] == 1) {
             check_error check_error = new check_error();
             check_error.dialog_check_error_starter(Activity_everyyear_checking.this);
