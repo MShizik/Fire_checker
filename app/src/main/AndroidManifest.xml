@@ -4,20 +4,23 @@
     package="com.example.fire_checker">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <application
+    <application xmlns:tools="http://schemas.android.com/tools"
         android:allowBackup="true"
-        tools:replace="android:allowBackup"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:usesCleartextTraffic="true"
+        android:exported="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:exported="true"
-        android:theme="@style/Theme.Fire_checker">
-        <activity android:name=".Activity_every_cvartal_checking"
+        android:theme="@style/Theme.Fire_checker"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".Activity_Random_check"
+            android:exported="true" />
+        <activity
+            android:name=".Activity_every_cvartal_checking"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.EVERYCVARTAL" />
@@ -25,7 +28,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity_everyyear_checking"
+        <activity
+            android:name=".Activity_everyyear_checking"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.EVERYYEAR" />
@@ -33,7 +37,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity_first_checking"
+        <activity
+            android:name=".Activity_first_checking"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.FIRST" />
@@ -41,7 +46,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity_qr_scaner"
+        <activity
+            android:name=".Activity_qr_scaner"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SCANER" />
@@ -49,7 +55,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity_type_choser"
+        <activity
+            android:name=".Activity_type_choser"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.CHOOSER" />
@@ -57,7 +64,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

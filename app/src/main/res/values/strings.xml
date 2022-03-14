@@ -34,7 +34,7 @@
     <string name="manometr">Манометр исправен</string>
     <string name="label">Клеймо в наличии</string>
     <string name="bar">Велчина давления в огентушителе в норме</string>
-    <string name = "weight">Масса огнетушителя в норме</string>
+    <string name="weight">Масса огнетушителя в норме</string>
     <string name="shlang">Состояние гибгкого шланга и распылителя удовлетворительное</string>
     <string name="place">Состояние места установки удовлетворительное</string>
     <string name="utechka">Велчина утечки вытесняющего газа из газового баллона или ОТВ из газовых огнетушителей:</string>

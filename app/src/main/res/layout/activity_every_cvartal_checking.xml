@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="120dp"
-        android:background="@color/special_black"
+        android:background="@color/special_white"
         android:overScrollMode="never"
 
         app:layout_constraintBottom_toTopOf="@+id/cvartal_back_btn"

@@ -1,24 +1,20 @@
 package com.example.fire_checker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import org.w3c.dom.Text;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class Activity_type_choser extends AppCompatActivity {
 
     Spinner checker_type_choser_obj;
-    Button start_checking_btn;
+    Button start_checking_btn, start_random_check_btn;
     public static String chosen_type;
 
     @Override
@@ -28,6 +24,7 @@ public class Activity_type_choser extends AppCompatActivity {
 
         checker_type_choser_obj=findViewById(R.id.checker_type_choser_field);
         start_checking_btn=findViewById(R.id.start_checking_btn);
+        start_random_check_btn = findViewById(R.id.start_random_checking_btn);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
@@ -52,6 +49,14 @@ public class Activity_type_choser extends AppCompatActivity {
             public void onClick(View view) {
 
                 startActivity(new Intent(Activity_type_choser.this, Activity_qr_scaner.class));
+            }
+        });
+
+        start_random_check_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    chosen_type = "Random_check";
+                    startActivity(new Intent(Activity_type_choser.this, Activity_qr_scaner.class));
             }
         });
     }

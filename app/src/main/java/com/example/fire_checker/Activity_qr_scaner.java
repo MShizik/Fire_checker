@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -532,7 +531,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
             result[0] = -1;
             ownership[0] = "-1";
             ownership[1] = "-1";
-            findViewById(R.id.scaner_progress_layout).setVisibility(GONE);
+            runOnUiThread(() -> findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE));
         }
 
         @Override
@@ -621,8 +620,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         break;
                     }
                     case "Обслуживание": {
-                        //get_status_request get_status = new get_status_request();
-                        //get_status.execute();
                         dialog_service_starter(MainActivity.expluatation);
                         break;
                     }
@@ -634,6 +631,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     }
                     case "Утилизация": {
                         dialog_util_starter();
+                        break;
+                    }
+                    case "Random_check":{
+                        startActivity(new Intent(Activity_qr_scaner.this, Activity_Random_check.class));
                         break;
                     }
                 }

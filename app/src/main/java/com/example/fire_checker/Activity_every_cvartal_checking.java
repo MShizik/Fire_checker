@@ -82,9 +82,8 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
         });
 
         cvartal_back_btn.setOnClickListener(v -> {
-            Activity_qr_scaner.serial_number = "";
             Activity_type_choser.chosen_type = "";
-            startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_type_choser.class));
+            startActivity(new Intent(Activity_every_cvartal_checking.this, Activity_Random_check.class));
         });
 
 

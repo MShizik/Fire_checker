@@ -102,9 +102,8 @@ public class Activity_everyyear_checking extends AppCompatActivity {
         });
 
         year_back_btn.setOnClickListener(v -> {
-            Activity_qr_scaner.serial_number = "";
             Activity_type_choser.chosen_type = "";
-            startActivity(new Intent(Activity_everyyear_checking.this, Activity_type_choser.class));
+            startActivity(new Intent(Activity_everyyear_checking.this, Activity_Random_check.class));
         });
     }
 
