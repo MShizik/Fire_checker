@@ -36,13 +36,13 @@ import java.util.Scanner;
 
 public class Activity_Random_check extends AppCompatActivity {
 
-    TextView random_sn, random_next_check_date, random_next_refile_date;
+    TextView random_sn_obj,random_fire_model_obj, random_commissioning_date_obj,random_place_obj, random_check_date_obj,random_next_check_date_obj, random_refile_date_obj,random_next_refile_date_obj, random_current_status_obj;
     Button random_start_check_btn;
     ImageButton home_btn;
     Spinner random_type_choser_obj;
     Integer dialog_service_condition_problems_results, dialog_on_service_condition_problems_results;
     String type, serial_number, value, service_chosen_type;
-    String random_next_check_date_txt = "Следующая проверка:\n", random_next_refile_date_txt = "Следущая перезаправка:\n";
+    String random_sn,random_fire_model,random_commissioning_date, random_place, random_check_date, random_next_check_date, random_refile_date, random_next_refile_date, random_current_status;
     final int[] res = new int[1];
     final int[] check = new int[1];
     @Override
@@ -50,30 +50,31 @@ public class Activity_Random_check extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_check);
 
-        random_sn = findViewById(R.id.random_fire_sn);
-        random_next_check_date = findViewById(R.id.random_next_check_date);
-        random_next_refile_date = findViewById(R.id.random_next_refile_date);
+        random_sn_obj = findViewById(R.id.random_fire_sn);
+        random_commissioning_date_obj = findViewById(R.id.random_util_date);
+        random_place_obj = findViewById(R.id.random_place);
+        random_check_date_obj = findViewById(R.id.random_last_check_date);
+        random_next_check_date_obj = findViewById(R.id.random_next_check_date);
+        random_refile_date_obj =findViewById(R.id.random_last_refile_date);
+        random_next_refile_date_obj = findViewById(R.id.random_next_refile_date);
+        random_current_status_obj = findViewById(R.id.random_current_status);
+        random_fire_model_obj = findViewById(R.id.random_fire_model);
         random_start_check_btn = findViewById(R.id.random_start_checking_btn);
         random_type_choser_obj = findViewById(R.id.random_type_choser_field);
         home_btn = findViewById(R.id.random_home_btn);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        random_sn.setText("Серийный номер:\n" + Activity_qr_scaner.serial_number);
+        serial_number = Activity_qr_scaner.serial_number;
 
-        SpannableString content = new SpannableString(random_next_check_date_txt);
-        content.setSpan(new UnderlineSpan(), 0, random_next_check_date_txt.length(), 0);
-        random_next_check_date.setText(content);
-        random_next_check_date.setOnClickListener(new View.OnClickListener() {
+        random_next_check_date_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Activity_Random_check.this, Activity_every_cvartal_checking.class));
             }
         });
 
-        content = new SpannableString(random_next_refile_date_txt);
-        content.setSpan(new UnderlineSpan(), 0, random_next_refile_date_txt.length(), 0);
-        random_next_refile_date.setText(content);
-        random_next_refile_date.setOnClickListener(new View.OnClickListener() {
+
+        random_next_refile_date_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog_refile_starter(MainActivity.expluatation);
@@ -81,6 +82,20 @@ public class Activity_Random_check extends AppCompatActivity {
         });
         findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
 
+        random_commissioning_date_obj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog_util_starter();
+            }
+        });
+
+        random_current_status_obj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
+                get_status.execute();
+            }
+        });
 
         ArrayAdapter<?> types_adapter =ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
         types_adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_main);
@@ -113,11 +128,13 @@ public class Activity_Random_check extends AppCompatActivity {
                         break;
                     }
                     case "Обслуживание": {
-                        dialog_service_starter(MainActivity.expluatation);
+                        Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
+                        get_status.execute();
                         break;
                     }
                     case "Заправка": {
-                        dialog_refile_starter(MainActivity.on_refile);
+                        Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
+                        get_status.execute();
                         break;
                     }
                     case "Утилизация": {
@@ -136,6 +153,9 @@ public class Activity_Random_check extends AppCompatActivity {
                 startActivity(new Intent(Activity_Random_check.this, Activity_type_choser.class));
             }
         });
+
+        Activity_Random_check.get_data_request get_data = new Activity_Random_check.get_data_request();
+        get_data.execute();
     }
 
     protected void dialog_util_starter() {
@@ -247,7 +267,7 @@ public class Activity_Random_check extends AppCompatActivity {
                     dialog_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String[] type = getResources().getStringArray(R.array.types_service_review);
+                            String[] type = getResources().getStringArray(R.array.types_on_service);
                             service_chosen_type = type[i].toString();
                         }
 
@@ -304,7 +324,7 @@ public class Activity_Random_check extends AppCompatActivity {
                     dialog_on_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String[] type = getResources().getStringArray(R.array.types_on_service);
+                            String[] type = getResources().getStringArray(R.array.types_service_review);
                             service_chosen_type = type[i].toString();
                         }
 
@@ -405,7 +425,7 @@ public class Activity_Random_check extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            value = "";
             res[0] = 0;
             check[0] = 0;
             findViewById(R.id.random_progress_layout).setVisibility(View.VISIBLE);
@@ -415,6 +435,7 @@ public class Activity_Random_check extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL get_status_endpoint = null;
+
             try {
 
                 get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
@@ -422,6 +443,7 @@ public class Activity_Random_check extends AppCompatActivity {
                     HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
                     get_status_connection.setRequestMethod("GET");
                     get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    System.out.println(get_status_connection.getResponseCode() + "Response code");
                     if (get_status_connection.getResponseCode() == 200) {
                         res[0] = 1;
                         String inline = "";
@@ -432,10 +454,25 @@ public class Activity_Random_check extends AppCompatActivity {
                         get_status_json_reader.beginObject();
                         while (get_status_json_reader.hasNext()) {
                             String key = get_status_json_reader.nextName();
-                            if (key.equals("current_status")) {
-                                check[0] = 1;
-                                value = get_status_json_reader.nextString();
-                                break;
+                            if (key.equals("result")) {
+                                if (!get_status_json_reader.nextString().equals("success")) {
+                                    check[0] = 0;
+                                } else {
+                                    check[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                get_status_json_reader.beginObject();
+                                while (get_status_json_reader.hasNext()) {
+                                    String key_2 = get_status_json_reader.nextName();
+                                    System.out.println("Ключ_2"+ key_2);
+                                    if (key_2.equals("current_status")) {
+                                        value = get_status_json_reader.nextString();
+                                        System.out.print("Значение: "+value);
+                                        break;
+                                    } else {
+                                        get_status_json_reader.skipValue();
+                                    }
+                                }
                             } else {
                                 get_status_json_reader.skipValue();
                             }
@@ -468,6 +505,129 @@ public class Activity_Random_check extends AppCompatActivity {
                 } else {
                     dialog_refile_starter(value);
                 }
+            }
+            else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_Random_check.this);
+            }
+        }
+    }
+
+    public class get_data_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            value = "";
+            res[0] = 0;
+            check[0] = 0;
+            findViewById(R.id.random_progress_layout).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL get_data_endpoint = null;
+
+            try {
+
+                get_data_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisherData?fire_id=" + serial_number);
+                try {
+                    HttpURLConnection get_data_connection = (HttpURLConnection) get_data_endpoint.openConnection();
+                    get_data_connection.setRequestMethod("GET");
+                    get_data_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    System.out.println(get_data_connection.getResponseCode() + "Response code");
+                    if (get_data_connection.getResponseCode() == 200) {
+                        res[0] = 1;
+                        String inline = "";
+                        Scanner scanner = new Scanner(get_data_endpoint.openStream());
+                        InputStream get_data_input = get_data_connection.getInputStream();
+                        InputStreamReader get_data_input_reader = new InputStreamReader(get_data_input, StandardCharsets.UTF_8);
+                        JsonReader get_data_json_reader = new JsonReader(get_data_input_reader);
+                        get_data_json_reader.beginObject();
+                        while (get_data_json_reader.hasNext()) {
+                            String key = get_data_json_reader.nextName();
+                            if (key.equals("result")) {
+                                if (!get_data_json_reader.nextString().equals("success")) {
+                                    check[0] = 0;
+                                } else {
+                                    check[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                get_data_json_reader.beginObject();
+                                while (get_data_json_reader.hasNext()) {
+                                    String key_2 = get_data_json_reader.nextName();
+                                    System.out.println("Ключ_2"+ key_2);
+                                    if (key_2.equals("serial_number")) {
+                                        random_sn = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("extinguisher_model")) {
+                                        random_fire_model = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("commissioning_date") ){
+                                        random_commissioning_date = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("place")){
+                                        random_place = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("check_date")){
+                                        random_check_date = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("next_check_date")){
+                                        random_next_check_date = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("recharge_date")){
+                                        random_refile_date = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("next_recharge_date")){
+                                        random_next_refile_date = get_data_json_reader.nextString();
+                                    } else if (key_2.equals("status")){
+                                        random_current_status = get_data_json_reader.nextString();
+                                    }
+                                    else {
+                                        get_data_json_reader.skipValue();
+                                    }
+                                }
+                            } else {
+                                get_data_json_reader.skipValue();
+                            }
+                        }
+                    } else {
+                        res[0] = 0;
+                    }
+                } catch (IOException e) {
+                    res[0] = 0;
+                    e.printStackTrace();
+
+                }
+            } catch (MalformedURLException e) {
+                res[0] = 0;
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
+
+            if (check[0] == 1 && res[0] == 1) {
+                random_sn_obj.setText("Серийный номер огнетушителя:\n"+random_sn);
+                random_fire_model_obj.setText("Модель огнетушителя:\n"+random_fire_model);
+
+                SpannableString content = new SpannableString("Дата утилизации:\n"+random_commissioning_date);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата утилизации:\n"+random_commissioning_date).length(), 0);
+                random_commissioning_date_obj.setText(content);
+
+                random_place_obj.setText("Расположение огнетушителя:\n"+random_place);
+                random_check_date_obj.setText("Дата последней проверки:\n"+random_check_date);
+
+                content = new SpannableString("Дата следующей проверки:\n"+random_next_check_date);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей проверки:\n"+random_next_check_date).length(), 0);
+                random_next_check_date_obj.setText(content);
+
+                random_refile_date_obj.setText("Дата последней перезарядки:\n"+random_refile_date);
+
+                content = new SpannableString("Дата следующей перезарядки:\n"+random_next_refile_date);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей перезарядки:\n"+random_next_refile_date).length(), 0);
+                random_next_refile_date_obj.setText(content);
+
+                content = new SpannableString("Текущий статус:\n"+random_current_status);
+                content.setSpan(new UnderlineSpan(), 0, ("Текущий статус:\n"+random_current_status).length(), 0);
+                random_current_status_obj.setText(content);
             }
             else {
                 api_error result_error = new api_error();

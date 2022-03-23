@@ -28,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     Button login_btn;
@@ -39,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public static String token;
     ConstraintLayout progress_layout_obj;
     ProgressBar main_progress_bar;
-    public static String on_refile = "обслуживание";
-    public static String on_repair = "обслуживание";
+    public static String on_refile = "на перезаправке";
+    public static String on_repair = "в ремонте";
     public static String expluatation = "в эксплуатации";
     public static String utilization = "Утилизация";
 

@@ -50,6 +50,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     ProgressBar scaner_progres_bar;
     String type = "";
     String value = "";
+    String value_2 = "";
     final int[] res = new int[1];
     final int[] check = new int[1];
     final int[] result = new int[2];
@@ -75,15 +76,21 @@ public class Activity_qr_scaner extends AppCompatActivity {
         findViewById(R.id.scaner_progress_layout).setVisibility(GONE);
         scaner_progres_bar = findViewById(R.id.scaner_progress_bar);
         scaner_layout_obj = findViewById(R.id.scaner_progress_layout);
+        serial_number = "";
         qr_code_scanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull Result result) {
+                if (!serial_number.equals(result.getText().toString())){
                 serial_number = result.getText().toString();
+
                 ownership_request ownership_check = new ownership_request();
                 ownership_check.execute();
+                }
 
             }
         });
+        qr_code_scanner.startPreview();
+
 
         scaner_home_btn.setOnClickListener(v -> {
             Activity_type_choser.chosen_type = "";
@@ -91,17 +98,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        qr_code_scanner.startPreview();
-    }
-
-    @Override
-    protected void onPause() {
-        qr_code_scanner.releaseResources();
-        super.onPause();
-    }
 
 
     protected void dialog_error_existance_starter() {
@@ -279,8 +275,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
                             type = MainActivity.utilization;
                         }
+                        dialog_service.dismiss();
                         set_status_request set_status = new set_status_request();
                         set_status.execute();
+
                     });
 
                     dialog_service_condition_problems.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -294,7 +292,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String[] type = getResources().getStringArray(R.array.types_service_review);
+                            String[] type = getResources().getStringArray(R.array.types_on_service);
                             service_chosen_type = type[i].toString();
                         }
 
@@ -303,8 +301,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                             service_chosen_type=MainActivity.expluatation;
                         }
                     });
-
-                    dialog_service.show();
+                    if (!dialog_service.isShowing()) {
+                        dialog_service.show();
+                    }
                 }
             });
         } else {
@@ -327,13 +326,15 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
                     dialog_on_service_send_btn.setOnClickListener(v -> {
                         Date current_date = new Date();
-                        type = MainActivity.on_refile;
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = MainActivity.on_refile;
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
                             type = MainActivity.on_repair;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
                             type = MainActivity.utilization;
+                        }
+                        else{
+                            type = MainActivity.on_repair;
                         }
                         dialog_on_service.dismiss();
                         set_status_request set_status = new set_status_request();
@@ -351,7 +352,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_on_service_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String[] type = getResources().getStringArray(R.array.types_on_service);
+                            String[] type = getResources().getStringArray(R.array.types_service_review);
                             service_chosen_type = type[i].toString();
                         }
 
@@ -361,7 +362,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         }
                     });
 
-                    dialog_on_service.show();
+                    if (!dialog_on_service.isShowing()) {
+                        dialog_on_service.show();
+                    }
                 }
             });
         }
@@ -372,7 +375,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            value_2 = "";
             res[0] = 0;
             check[0] = 0;
             findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
@@ -382,6 +385,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL get_status_endpoint = null;
+
             try {
 
                 get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
@@ -389,6 +393,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
                     get_status_connection.setRequestMethod("GET");
                     get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    System.out.println(get_status_connection.getResponseCode() + "Response code");
                     if (get_status_connection.getResponseCode() == 200) {
                         res[0] = 1;
                         String inline = "";
@@ -399,10 +404,25 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         get_status_json_reader.beginObject();
                         while (get_status_json_reader.hasNext()) {
                             String key = get_status_json_reader.nextName();
-                            if (key.equals("current_status")) {
-                                check[0] = 1;
-                                value = get_status_json_reader.nextString();
-                                break;
+                            if (key.equals("result")) {
+                                if (!get_status_json_reader.nextString().equals("success")) {
+                                    check[0] = 0;
+                                } else {
+                                    check[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                get_status_json_reader.beginObject();
+                                while (get_status_json_reader.hasNext()) {
+                                    String key_2 = get_status_json_reader.nextName();
+                                    System.out.println("Ключ_2"+ key_2);
+                                    if (key_2.equals("current_status")) {
+                                        value_2 = get_status_json_reader.nextString();
+                                        System.out.print("Значение: "+value_2);
+                                        break;
+                                    } else {
+                                        get_status_json_reader.skipValue();
+                                    }
+                                }
                             } else {
                                 get_status_json_reader.skipValue();
                             }
@@ -428,12 +448,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
             findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
 
             if (check[0] == 1 && res[0] == 1) {
-                System.out.println(value);
+                System.out.println(value_2);
                 if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
 
-                    dialog_service_starter(value);
+                    dialog_service_starter(value_2);
                 } else {
-                    dialog_refile_starter(value);
+                    dialog_refile_starter(value_2);
                 }
             }
             else {
@@ -456,10 +476,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             String set_status_post_params = "fire_id=" + serial_number + "&date=" + new Date() + "&type=" + type;
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-            System.out.println(type);
-            URL set_status_endpoint = null;
-            try {
 
+            URL set_status_endpoint = null;
+            try{
                 set_status_endpoint = new URL("http://194.67.55.58:8080/api/changeStatus");
                 try {
                     HttpURLConnection set_status_connection = (HttpURLConnection) set_status_endpoint.openConnection();
@@ -470,7 +489,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     os.write(set_status_post_params.getBytes());
                     os.flush();
                     os.close();
-
+                    System.out.println(set_status_connection.getResponseCode() + "Response code");
                     if (set_status_connection.getResponseCode() == 200) {
                         InputStream set_status_response = set_status_connection.getInputStream();
                         InputStreamReader set_status_response_reader = new InputStreamReader(set_status_response, StandardCharsets.UTF_8);
@@ -479,8 +498,10 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         set_status_json_reader.beginObject();
                         while (set_status_json_reader.hasNext()) {
                             String key = set_status_json_reader.nextName();
+                            System.out.println(key + "Key");
                             if (key.equals("result")) {
                                 value = set_status_json_reader.nextString();
+                                System.out.println(value + "Value");
                                 if (value.equals("success")) {
                                     check[0] = 1;
                                 } else {
@@ -620,13 +641,17 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         break;
                     }
                     case "Обслуживание": {
-                        dialog_service_starter(MainActivity.expluatation);
+                        System.out.println("Обслуживание");
+                        get_status_request get_status = new get_status_request();
+                        get_status.execute();
+                        //dialog_service_starter(MainActivity.expluatation);
                         break;
                     }
                     case "Заправка": {
-                        //get_status_request get_status = new get_status_request();
-                        //get_status.execute();
-                        dialog_refile_starter(MainActivity.on_refile);
+                        System.out.println("Заправка");
+                        get_status_request get_status = new get_status_request();
+                        get_status.execute();
+                        //dialog_refile_starter(MainActivity.on_refile);
                         break;
                     }
                     case "Утилизация": {

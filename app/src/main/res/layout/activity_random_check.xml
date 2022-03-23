@@ -69,6 +69,63 @@
                 android:layout_weight=".28"
                 android:text="Серийный номер: 000200400005220131101" />
             <TextView
+                android:id="@+id/random_fire_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart= "60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_gravity="left"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_weight=".28"
+                android:text="Модель огнетушителя:\nТакая-то" />
+            <TextView
+            android:id="@+id/random_util_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart= "60dp"
+            android:layout_marginEnd="60dp"
+            android:layout_gravity="left"
+            android:fontFamily="sans-serif"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_weight=".28"
+                android:clickable="true"
+            android:text="Дата утилизации:\nТакая-то" />
+            <TextView
+                android:id="@+id/random_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart= "60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_gravity="left"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_weight=".28"
+                android:text="Расположение:\nТакое-то" />
+            <TextView
+                android:id="@+id/random_last_check_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart= "60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_gravity="left"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_weight=".28"
+                android:text="Дата последней проверки:\nТакая-то" />
+            <TextView
                 android:id="@+id/random_next_check_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,6 +140,21 @@
                 android:layout_weight=".28"
                 android:clickable="true"
                 android:text="Дата следующей проверки:\n22.04.2022" />
+
+            <TextView
+                android:id="@+id/random_last_refile_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart= "60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_gravity="left"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_weight=".28"
+                android:text="Дата последней перезарядки:\nТакая-то" />
             <TextView
                 android:id="@+id/random_next_refile_date"
                 android:layout_width="match_parent"
@@ -98,6 +170,21 @@
                 android:layout_weight=".28"
                 android:clickable="true"
                 android:text="Дата следующей перезаправки:\n23.03.2022" />
+            <TextView
+                android:id="@+id/random_current_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart= "60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_gravity="left"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_weight=".28"
+                android:clickable="true"
+                android:text="Текущий статус:\nТакой-то" />
 
             <RelativeLayout
                 android:id="@+id/relativeLayout"
