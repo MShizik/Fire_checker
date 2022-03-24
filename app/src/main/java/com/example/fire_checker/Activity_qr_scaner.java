@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Activity_qr_scaner extends AppCompatActivity {
@@ -642,15 +643,19 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     }
                     case "Обслуживание": {
                         System.out.println("Обслуживание");
-                        get_status_request get_status = new get_status_request();
-                        get_status.execute();
+                        get_data_request get_data = new get_data_request();
+                        get_data.execute();
+                        //get_status_request get_status = new get_status_request();
+                        //get_status.execute();
                         //dialog_service_starter(MainActivity.expluatation);
                         break;
                     }
                     case "Заправка": {
                         System.out.println("Заправка");
-                        get_status_request get_status = new get_status_request();
-                        get_status.execute();
+                        get_data_request get_data = new get_data_request();
+                        get_data.execute();
+                        //get_status_request get_status = new get_status_request();
+                        //get_status.execute();
                         //dialog_refile_starter(MainActivity.on_refile);
                         break;
                     }
@@ -672,6 +677,97 @@ public class Activity_qr_scaner extends AppCompatActivity {
                 result_error.dialog_api_error_starter(Activity_qr_scaner.this);
             }
             qr_code_scanner.startPreview();
+        }
+    }
+
+    public class get_data_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            value = "";
+            res[0] = 0;
+            check[0] = 0;
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL get_data_endpoint = null;
+
+            try {
+
+                get_data_endpoint = new URL("http://194.67.55.58:8080/api/getExtinguisherData?fire_id=" + serial_number);
+                try {
+                    HttpURLConnection get_data_connection = (HttpURLConnection) get_data_endpoint.openConnection();
+                    get_data_connection.setRequestMethod("GET");
+                    get_data_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    System.out.println(get_data_connection.getResponseCode() + "Response code");
+                    if (get_data_connection.getResponseCode() == 200) {
+                        res[0] = 1;
+                        String inline = "";
+                        Scanner scanner = new Scanner(get_data_endpoint.openStream());
+                        InputStream get_data_input = get_data_connection.getInputStream();
+                        InputStreamReader get_data_input_reader = new InputStreamReader(get_data_input, StandardCharsets.UTF_8);
+                        JsonReader get_data_json_reader = new JsonReader(get_data_input_reader);
+                        get_data_json_reader.beginObject();
+                        while (get_data_json_reader.hasNext()) {
+                            String key = get_data_json_reader.nextName();
+                            if (key.equals("result")) {
+                                if (!get_data_json_reader.nextString().equals("success")) {
+                                    check[0] = 0;
+                                } else {
+                                    check[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                get_data_json_reader.beginObject();
+                                while (get_data_json_reader.hasNext()) {
+                                    String key_2 = get_data_json_reader.nextName();
+                                    System.out.println("Ключ_2"+ key_2);
+                                    if (key_2.equals("status")){
+                                        value = get_data_json_reader.nextString().toLowerCase(Locale.ROOT);
+                                    }
+                                    else {
+                                        get_data_json_reader.skipValue();
+                                    }
+                                }
+                            } else {
+                                get_data_json_reader.skipValue();
+                            }
+                        }
+                    } else {
+                        res[0] = 0;
+                    }
+                } catch (IOException e) {
+                    res[0] = 0;
+                    e.printStackTrace();
+
+                }
+            } catch (MalformedURLException e) {
+                res[0] = 0;
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
+
+            if (check[0] == 1 && res[0] == 1) {
+                System.out.println(value+"Значение");
+                if (Activity_type_choser.chosen_type.equals("Обслуживание")){
+                    dialog_service_starter(value);
+                }
+                else{
+                    dialog_refile_starter(value);
+                }
+            }
+            else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
+            }
         }
     }
 

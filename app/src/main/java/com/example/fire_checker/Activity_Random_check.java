@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Activity_Random_check extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class Activity_Random_check extends AppCompatActivity {
     Spinner random_type_choser_obj;
     Integer dialog_service_condition_problems_results, dialog_on_service_condition_problems_results;
     String type, serial_number, value, service_chosen_type;
-    String random_sn,random_fire_model,random_commissioning_date, random_place, random_check_date, random_next_check_date, random_refile_date, random_next_refile_date, random_current_status;
+    String random_sn="",random_fire_model="",random_commissioning_date="", random_place="", random_check_date="", random_next_check_date="", random_refile_date="", random_next_refile_date="", random_current_status="";
     final int[] res = new int[1];
     final int[] check = new int[1];
     @Override
@@ -128,13 +129,15 @@ public class Activity_Random_check extends AppCompatActivity {
                         break;
                     }
                     case "Обслуживание": {
-                        Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
-                        get_status.execute();
+                        dialog_service_starter(random_current_status);
+                        //Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
+                        //get_status.execute();
                         break;
                     }
                     case "Заправка": {
-                        Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
-                        get_status.execute();
+                        dialog_refile_starter(random_current_status);
+                        //Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
+                        //get_status.execute();
                         break;
                     }
                     case "Утилизация": {
@@ -180,7 +183,7 @@ public class Activity_Random_check extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if (status.equals(MainActivity.on_refile)) {
+        if ((status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_refile)) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -225,7 +228,7 @@ public class Activity_Random_check extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair)) {
+        if ((status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_refile) || (status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_repair)) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -435,9 +438,7 @@ public class Activity_Random_check extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             String PROPERTY_AUTH = "Bearer " + MainActivity.token;
             URL get_status_endpoint = null;
-
             try {
-
                 get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
                 try {
                     HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
@@ -565,6 +566,7 @@ public class Activity_Random_check extends AppCompatActivity {
                                         random_commissioning_date = get_data_json_reader.nextString();
                                     } else if (key_2.equals("place")){
                                         random_place = get_data_json_reader.nextString();
+
                                     } else if (key_2.equals("check_date")){
                                         random_check_date = get_data_json_reader.nextString();
                                     } else if (key_2.equals("next_check_date")){
@@ -605,29 +607,32 @@ public class Activity_Random_check extends AppCompatActivity {
             findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
 
             if (check[0] == 1 && res[0] == 1) {
-                random_sn_obj.setText("Серийный номер огнетушителя:\n"+random_sn);
+                random_sn_obj.setText("Серийный номер:\n"+random_sn);
                 random_fire_model_obj.setText("Модель огнетушителя:\n"+random_fire_model);
 
                 SpannableString content = new SpannableString("Дата утилизации:\n"+random_commissioning_date);
-                content.setSpan(new UnderlineSpan(), 0, ("Дата утилизации:\n"+random_commissioning_date).length(), 0);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата утилизации:\n").length(), 0);
                 random_commissioning_date_obj.setText(content);
 
                 random_place_obj.setText("Расположение огнетушителя:\n"+random_place);
                 random_check_date_obj.setText("Дата последней проверки:\n"+random_check_date);
 
                 content = new SpannableString("Дата следующей проверки:\n"+random_next_check_date);
-                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей проверки:\n"+random_next_check_date).length(), 0);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей проверки:\n").length(), 0);
                 random_next_check_date_obj.setText(content);
 
                 random_refile_date_obj.setText("Дата последней перезарядки:\n"+random_refile_date);
 
                 content = new SpannableString("Дата следующей перезарядки:\n"+random_next_refile_date);
-                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей перезарядки:\n"+random_next_refile_date).length(), 0);
+                content.setSpan(new UnderlineSpan(), 0, ("Дата следующей перезарядки:\n").length(), 0);
                 random_next_refile_date_obj.setText(content);
 
                 content = new SpannableString("Текущий статус:\n"+random_current_status);
-                content.setSpan(new UnderlineSpan(), 0, ("Текущий статус:\n"+random_current_status).length(), 0);
+                content.setSpan(new UnderlineSpan(), 0, ("Текущий статус:\n").length(), 0);
                 random_current_status_obj.setText(content);
+                if (random_current_status.toLowerCase(Locale.ROOT).equals(MainActivity.on_refile) || random_current_status.toLowerCase(Locale.ROOT).equals(MainActivity.on_repair)){
+                    random_current_status_obj.setTextColor(Color.rgb(237, 32, 36));
+                }
             }
             else {
                 api_error result_error = new api_error();
