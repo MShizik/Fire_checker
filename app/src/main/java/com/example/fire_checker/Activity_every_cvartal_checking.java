@@ -113,8 +113,8 @@ public class Activity_every_cvartal_checking extends AppCompatActivity {
                     else if(cvartal_type_chosen.equals("Отправить на перезаправку")){
                         dialog_review_cvartal.dismiss();
                         cvartal_type_chosen=MainActivity.on_repair;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_every_cvartal_checking.this);
+                        rechargeRequest.execute();
                     }
                     else if (cvartal_type_chosen.equals("Отправить в ремонт")) {
                         cvartal_type_chosen=MainActivity.on_repair;

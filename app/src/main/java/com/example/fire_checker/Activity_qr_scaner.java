@@ -204,7 +204,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if (status.equals(MainActivity.on_refile)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.service)) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -217,8 +217,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         dialog_get_from_refile.dismiss();
                         Date current_date = new Date();
                         type = MainActivity.expluatation;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
+                        rechargeRequest.execute();
 
                     });
                     dialog_get_from_refile.setCancelable(true);
@@ -237,8 +237,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
                         dialog_send_to_refile.dismiss();
                         type = MainActivity.on_refile;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
+                        rechargeRequest.execute();
                     });
                     dialog_send_to_refile.setCancelable(false);
                     dialog_send_to_refile.show();
@@ -249,7 +249,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair) || status.equals(MainActivity.service)) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -271,6 +271,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
                             type = MainActivity.expluatation;
+                            fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Принять с ремонта")) {
                             type = MainActivity.expluatation;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -329,6 +331,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = MainActivity.on_refile;
+                            toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
                             type = MainActivity.on_repair;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -370,98 +374,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
             });
         }
 
-    }
-
-    public class get_status_request extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            value_2 = "";
-            res[0] = 0;
-            check[0] = 0;
-            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-            URL get_status_endpoint = null;
-
-            try {
-
-                get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
-                try {
-                    HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
-                    get_status_connection.setRequestMethod("GET");
-                    get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-                    System.out.println(get_status_connection.getResponseCode() + "Response code");
-                    if (get_status_connection.getResponseCode() == 200) {
-                        res[0] = 1;
-                        String inline = "";
-                        Scanner scanner = new Scanner(get_status_endpoint.openStream());
-                        InputStream get_status_input = get_status_connection.getInputStream();
-                        InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
-                        JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
-                        get_status_json_reader.beginObject();
-                        while (get_status_json_reader.hasNext()) {
-                            String key = get_status_json_reader.nextName();
-                            if (key.equals("result")) {
-                                if (!get_status_json_reader.nextString().equals("success")) {
-                                    check[0] = 0;
-                                } else {
-                                    check[0] = 1;
-                                }
-                            } else if (key.equals("data")) {
-                                get_status_json_reader.beginObject();
-                                while (get_status_json_reader.hasNext()) {
-                                    String key_2 = get_status_json_reader.nextName();
-                                    System.out.println("Ключ_2"+ key_2);
-                                    if (key_2.equals("current_status")) {
-                                        value_2 = get_status_json_reader.nextString();
-                                        System.out.print("Значение: "+value_2);
-                                        break;
-                                    } else {
-                                        get_status_json_reader.skipValue();
-                                    }
-                                }
-                            } else {
-                                get_status_json_reader.skipValue();
-                            }
-                        }
-                    } else {
-                        res[0] = 0;
-                    }
-                } catch (IOException e) {
-                    res[0] = 0;
-                    e.printStackTrace();
-
-                }
-            } catch (MalformedURLException e) {
-                res[0] = 0;
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
-
-            if (check[0] == 1 && res[0] == 1) {
-                System.out.println(value_2);
-                if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
-
-                    dialog_service_starter(value_2);
-                } else {
-                    dialog_refile_starter(value_2);
-                }
-            }
-            else {
-                api_error result_error = new api_error();
-                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
-            }
-        }
     }
 
     public class set_status_request extends AsyncTask<Void, Void, Void> {
@@ -725,7 +637,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     String key_2 = get_data_json_reader.nextName();
                                     System.out.println("Ключ_2"+ key_2);
                                     if (key_2.equals("status")){
-                                        value = get_data_json_reader.nextString().toLowerCase(Locale.ROOT);
+                                        value = get_data_json_reader.nextString();
                                     }
                                     else {
                                         get_data_json_reader.skipValue();

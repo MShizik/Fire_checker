@@ -131,8 +131,8 @@ public class Activity_everyyear_checking extends AppCompatActivity {
                         dialog_review_year.dismiss();
                     } else if (year_type_chosen.equals("Отправить на перезаправку")) {
                         year_type_chosen = MainActivity.on_refile;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_everyyear_checking.this);
+                        rechargeRequest.execute();
                     } else if (year_type_chosen.equals("Отправить в ремонт")) {
                         year_type_chosen = MainActivity.on_repair;
                         set_status_request set_status = new set_status_request();

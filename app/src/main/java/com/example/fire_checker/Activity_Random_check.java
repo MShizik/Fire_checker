@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Activity_Random_check extends AppCompatActivity {
@@ -78,7 +77,7 @@ public class Activity_Random_check extends AppCompatActivity {
         random_next_refile_date_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog_refile_starter(MainActivity.expluatation);
+                dialog_refile_starter(random_current_status);
             }
         });
         findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
@@ -93,8 +92,7 @@ public class Activity_Random_check extends AppCompatActivity {
         random_current_status_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity_Random_check.get_status_request get_status = new Activity_Random_check.get_status_request();
-                get_status.execute();
+                dialog_service_starter(random_current_status);
             }
         });
 
@@ -175,6 +173,7 @@ public class Activity_Random_check extends AppCompatActivity {
                     type = MainActivity.utilization;
                     Activity_Random_check.set_status_request set_status = new Activity_Random_check.set_status_request();
                     set_status.execute();
+
                 });
                 dialog_util.setCancelable(true);
                 dialog_util.show();
@@ -183,7 +182,7 @@ public class Activity_Random_check extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if ((status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_refile)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.service)) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -196,8 +195,8 @@ public class Activity_Random_check extends AppCompatActivity {
                         dialog_get_from_refile.dismiss();
                         Date current_date = new Date();
                         type = MainActivity.expluatation;
-                        Activity_Random_check.set_status_request set_status = new Activity_Random_check.set_status_request();
-                        set_status.execute();
+                        fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_Random_check.this);
+                        rechargeRequest.execute();
 
                     });
                     dialog_get_from_refile.setCancelable(true);
@@ -216,8 +215,8 @@ public class Activity_Random_check extends AppCompatActivity {
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
                         dialog_send_to_refile.dismiss();
                         type = MainActivity.on_refile;
-                        Activity_Random_check.set_status_request set_status = new Activity_Random_check.set_status_request();
-                        set_status.execute();
+                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_Random_check.this);
+                        rechargeRequest.execute();
                     });
                     dialog_send_to_refile.setCancelable(false);
                     dialog_send_to_refile.show();
@@ -228,7 +227,7 @@ public class Activity_Random_check extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if ((status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_refile) || (status.toLowerCase(Locale.ROOT)).equals(MainActivity.on_repair)) {
+        if (status.equals(MainActivity.on_refile) || (status.equals(MainActivity.on_repair) || status.equals(MainActivity.service))) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -250,6 +249,8 @@ public class Activity_Random_check extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
                             type = MainActivity.expluatation;
+                            fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_Random_check.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Принять с ремонта")) {
                             type = MainActivity.expluatation;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -306,6 +307,8 @@ public class Activity_Random_check extends AppCompatActivity {
                         type = MainActivity.on_refile;
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = MainActivity.on_refile;
+                            toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_Random_check.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
                             type = MainActivity.on_repair;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -413,10 +416,15 @@ public class Activity_Random_check extends AppCompatActivity {
             super.onPostExecute(aVoid);
             findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
             if (check[0] == 1 && res[0] == 1) {
-                System.out.println("Everything is ok");
-                Activity_qr_scaner.serial_number = "";
-                Activity_type_choser.chosen_type = "";
-                startActivity(new Intent(Activity_Random_check.this, Activity_type_choser.class));
+                if (type.equals(MainActivity.utilization)){
+                    Activity_qr_scaner.serial_number = "";
+                    Activity_type_choser.chosen_type = "";
+                    startActivity(new Intent(Activity_Random_check.this, Activity_type_choser.class));
+                }
+                else {
+                    Activity_Random_check.get_data_request get_data = new get_data_request();
+                    get_data.execute();
+                }
             } else {
                 api_error result_error = new api_error();
                 result_error.dialog_api_error_starter(Activity_Random_check.this);
@@ -424,95 +432,6 @@ public class Activity_Random_check extends AppCompatActivity {
         }
     }
 
-    public class get_status_request extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            value = "";
-            res[0] = 0;
-            check[0] = 0;
-            findViewById(R.id.random_progress_layout).setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-            URL get_status_endpoint = null;
-            try {
-                get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
-                try {
-                    HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
-                    get_status_connection.setRequestMethod("GET");
-                    get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-                    System.out.println(get_status_connection.getResponseCode() + "Response code");
-                    if (get_status_connection.getResponseCode() == 200) {
-                        res[0] = 1;
-                        String inline = "";
-                        Scanner scanner = new Scanner(get_status_endpoint.openStream());
-                        InputStream get_status_input = get_status_connection.getInputStream();
-                        InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
-                        JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
-                        get_status_json_reader.beginObject();
-                        while (get_status_json_reader.hasNext()) {
-                            String key = get_status_json_reader.nextName();
-                            if (key.equals("result")) {
-                                if (!get_status_json_reader.nextString().equals("success")) {
-                                    check[0] = 0;
-                                } else {
-                                    check[0] = 1;
-                                }
-                            } else if (key.equals("data")) {
-                                get_status_json_reader.beginObject();
-                                while (get_status_json_reader.hasNext()) {
-                                    String key_2 = get_status_json_reader.nextName();
-                                    System.out.println("Ключ_2"+ key_2);
-                                    if (key_2.equals("current_status")) {
-                                        value = get_status_json_reader.nextString();
-                                        System.out.print("Значение: "+value);
-                                        break;
-                                    } else {
-                                        get_status_json_reader.skipValue();
-                                    }
-                                }
-                            } else {
-                                get_status_json_reader.skipValue();
-                            }
-                        }
-                    } else {
-                        res[0] = 0;
-                    }
-                } catch (IOException e) {
-                    res[0] = 0;
-                    e.printStackTrace();
-
-                }
-            } catch (MalformedURLException e) {
-                res[0] = 0;
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
-
-            if (check[0] == 1 && res[0] == 1) {
-                System.out.println(value);
-                if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
-
-                    dialog_service_starter(value);
-                } else {
-                    dialog_refile_starter(value);
-                }
-            }
-            else {
-                api_error result_error = new api_error();
-                result_error.dialog_api_error_starter(Activity_Random_check.this);
-            }
-        }
-    }
 
     public class get_data_request extends AsyncTask<Void, Void, Void> {
         @Override
@@ -566,7 +485,6 @@ public class Activity_Random_check extends AppCompatActivity {
                                         random_commissioning_date = get_data_json_reader.nextString();
                                     } else if (key_2.equals("place")){
                                         random_place = get_data_json_reader.nextString();
-
                                     } else if (key_2.equals("check_date")){
                                         random_check_date = get_data_json_reader.nextString();
                                     } else if (key_2.equals("next_check_date")){
@@ -607,9 +525,19 @@ public class Activity_Random_check extends AppCompatActivity {
             findViewById(R.id.random_progress_layout).setVisibility(View.GONE);
 
             if (check[0] == 1 && res[0] == 1) {
+
+                Date current_date = new Date();
+
                 random_sn_obj.setText("Серийный номер:\n"+random_sn);
                 random_fire_model_obj.setText("Модель огнетушителя:\n"+random_fire_model);
 
+                if (!random_commissioning_date.equals("") && random_commissioning_date.length() == 10){
+                    Date next_check_date = convertStringToDate(random_commissioning_date);
+                    Long dif = next_check_date.getTime() - current_date.getTime();
+                    if (dif < 604800000){
+                        random_commissioning_date_obj.setTextColor(Color.rgb(237, 32, 36));
+                    }
+                }
                 SpannableString content = new SpannableString("Дата утилизации:\n"+random_commissioning_date);
                 content.setSpan(new UnderlineSpan(), 0, ("Дата утилизации:\n").length(), 0);
                 random_commissioning_date_obj.setText(content);
@@ -617,20 +545,41 @@ public class Activity_Random_check extends AppCompatActivity {
                 random_place_obj.setText("Расположение огнетушителя:\n"+random_place);
                 random_check_date_obj.setText("Дата последней проверки:\n"+random_check_date);
 
+                if (!random_next_check_date.equals("") && random_next_check_date.length() == 10){
+                    System.out.println("Начало трансформации");
+                    Date next_check_date = convertStringToDate(random_next_check_date);
+                    Long dif = next_check_date.getTime() - current_date.getTime();
+                    System.out.println(next_check_date+"next"+current_date+"current");
+                    System.out.println("Разница:"+dif);
+                    if (dif < 604800000){
+                        System.out.println("Разница:"+dif);
+                        random_next_check_date_obj.setTextColor(Color.rgb(237, 32, 36));
+                    }
+                }
                 content = new SpannableString("Дата следующей проверки:\n"+random_next_check_date);
                 content.setSpan(new UnderlineSpan(), 0, ("Дата следующей проверки:\n").length(), 0);
                 random_next_check_date_obj.setText(content);
 
                 random_refile_date_obj.setText("Дата последней перезарядки:\n"+random_refile_date);
 
+
+                if (!random_next_refile_date.equals("") && random_next_refile_date.length() == 10){
+                    Date next_refile_date = convertStringToDate(random_next_refile_date);
+                    Long dif = next_refile_date.getTime() - current_date.getTime();
+                    if (dif < 604800000){
+                        random_next_refile_date_obj.setTextColor(Color.rgb(237, 32, 36));
+                    }
+                }
                 content = new SpannableString("Дата следующей перезарядки:\n"+random_next_refile_date);
                 content.setSpan(new UnderlineSpan(), 0, ("Дата следующей перезарядки:\n").length(), 0);
                 random_next_refile_date_obj.setText(content);
 
+
+
                 content = new SpannableString("Текущий статус:\n"+random_current_status);
                 content.setSpan(new UnderlineSpan(), 0, ("Текущий статус:\n").length(), 0);
                 random_current_status_obj.setText(content);
-                if (random_current_status.toLowerCase(Locale.ROOT).equals(MainActivity.on_refile) || random_current_status.toLowerCase(Locale.ROOT).equals(MainActivity.on_repair)){
+                if (random_current_status.equals(MainActivity.utilization)|| random_current_status.equals(MainActivity.on_refile) || random_current_status.equals(MainActivity.on_repair) || random_current_status.equals(MainActivity.service)){
                     random_current_status_obj.setTextColor(Color.rgb(237, 32, 36));
                 }
             }
@@ -639,5 +588,22 @@ public class Activity_Random_check extends AppCompatActivity {
                 result_error.dialog_api_error_starter(Activity_Random_check.this);
             }
         }
+    }
+
+    Date convertStringToDate(String data){
+        String year_str = data.charAt(0) + "";
+        year_str = year_str + data.charAt(1) + data.charAt(2) + data.charAt(3);
+        Integer year = Integer.valueOf(year_str) - 1900;
+
+        String month_str = data.charAt(5)+"";
+        month_str = month_str + data.charAt(6);
+        Integer month = Integer.valueOf(month_str)-1;
+
+        String date_str = data.charAt(8) + "";
+        date_str = date_str + data.charAt(9);
+        Integer day  = Integer.valueOf(date_str);
+
+        Date this_date = new Date(year,month,day);
+        return this_date;
     }
 }

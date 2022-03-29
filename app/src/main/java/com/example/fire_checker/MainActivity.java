@@ -38,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
     public static String token;
     ConstraintLayout progress_layout_obj;
     ProgressBar main_progress_bar;
-    public static String on_refile = "на перезаправке";
-    public static String on_repair = "в ремонте";
-    public static String expluatation = "в эксплуатации";
+    public static String on_refile = "На перезаправке";
+    public static String on_repair = "В ремонте";
+    public static String expluatation = "В эксплуатации";
     public static String utilization = "Утилизация";
+    public static String service = "Обслуживание";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
