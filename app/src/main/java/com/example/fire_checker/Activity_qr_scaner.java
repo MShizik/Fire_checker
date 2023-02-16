@@ -109,6 +109,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
             //nfc not support your device.
             return;
         }
+
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
                 getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
