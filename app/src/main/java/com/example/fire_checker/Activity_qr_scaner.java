@@ -3,14 +3,22 @@ package com.example.fire_checker;
 import static android.view.View.GONE;
 
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.util.JsonReader;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +29,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,7 +60,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
     ProgressBar scaner_progres_bar;
     String type = "";
     String value = "";
-    String value_2 = "";
+    NfcAdapter mAdapter;
+    PendingIntent mPendingIntent;
     final int[] res = new int[1];
     final int[] check = new int[1];
     final int[] result = new int[2];
@@ -61,12 +71,13 @@ public class Activity_qr_scaner extends AppCompatActivity {
     public static Integer dialog_service_condition_problems_results;
     public static Integer dialog_on_service_condition_problems_results;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scaner);
         scaner_home_btn = findViewById(R.id.scaner_home_btn);
-        qr_code_scanner_view = findViewById(R.id.qr_scanner);
+        /*qr_code_scanner_view = findViewById(R.id.qr_scanner);
         qr_code_scanner = new CodeScanner(this, qr_code_scanner_view);
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -91,12 +102,67 @@ public class Activity_qr_scaner extends AppCompatActivity {
             }
         });
         qr_code_scanner.startPreview();
+        */
 
+        mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+            //nfc not support your device.
+            return;
+        }
+        mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         scaner_home_btn.setOnClickListener(v -> {
             Activity_type_choser.chosen_type = "";
             startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
         });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAdapter != null) {
+            mAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        GetDataFromTag(tag, intent);
+
+    }
+
+    private void GetDataFromTag(Tag tag, Intent intent) {
+        Ndef ndef = Ndef.get(tag);
+        try {
+            ndef.connect();
+            Parcelable[] messages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+            if (messages != null) {
+                NdefMessage[] ndefMessages = new NdefMessage[messages.length];
+                for (int i = 0; i < messages.length; i++) {
+                    ndefMessages[i] = (NdefMessage) messages[i];
+                }
+                NdefRecord record = ndefMessages[0].getRecords()[0];
+
+                byte[] payload = record.getPayload();
+                String text = new String(payload);
+                Log.e("tag", "vahid" + text);
+                ndef.close();
+
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Cannot Read From Tag.", Toast.LENGTH_LONG).show();
+        }
     }
 
 

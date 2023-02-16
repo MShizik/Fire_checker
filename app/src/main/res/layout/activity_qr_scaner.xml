@@ -25,7 +25,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:indeterminateTint="@color/special_red"
-            android:progressDrawable="@drawable/progress_bar_style"
+            android:progressDrawable="@drawable/button_style"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -33,11 +33,22 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/scaner_nfc_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:src="@drawable/ic_baseline_nfc_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/scaner_home_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/qr_scanner"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="#00FFFFFF"
@@ -47,7 +58,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:src="@drawable/ic_baseline_home_24" />
 
-    <com.budiyev.android.codescanner.CodeScannerView
+    <!---<com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/qr_scanner"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -71,6 +82,6 @@
         app:maskColor="#00000000"
         tools:visibility="visible">
 
-    </com.budiyev.android.codescanner.CodeScannerView>
+    </com.budiyev.android.codescanner.CodeScannerView> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
