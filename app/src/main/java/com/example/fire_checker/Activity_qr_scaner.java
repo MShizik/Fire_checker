@@ -11,6 +11,8 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.MifareClassic;
+import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -60,6 +62,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     ProgressBar scaner_progres_bar;
     String type = "";
     String value = "";
+    String value_2 = "";
     NfcAdapter mAdapter;
     PendingIntent mPendingIntent;
     final int[] res = new int[1];
@@ -106,8 +109,9 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
-            //nfc not support your device.
-            return;
+            Toast.makeText(this,"NO NFC Capabilities",
+                    Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
@@ -123,6 +127,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        assert mAdapter != null;
         mAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
     }
 
@@ -137,33 +142,143 @@ public class Activity_qr_scaner extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        GetDataFromTag(tag, intent);
-
+        setIntent(intent);
+        resolveIntent(intent);
     }
 
-    private void GetDataFromTag(Tag tag, Intent intent) {
-        Ndef ndef = Ndef.get(tag);
-        try {
-            ndef.connect();
-            Parcelable[] messages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-
-            if (messages != null) {
-                NdefMessage[] ndefMessages = new NdefMessage[messages.length];
-                for (int i = 0; i < messages.length; i++) {
-                    ndefMessages[i] = (NdefMessage) messages[i];
-                }
-                NdefRecord record = ndefMessages[0].getRecords()[0];
-
-                byte[] payload = record.getPayload();
-                String text = new String(payload);
-                Log.e("tag", "vahid" + text);
-                ndef.close();
-
-            }
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Cannot Read From Tag.", Toast.LENGTH_LONG).show();
+    private void resolveIntent(Intent intent) {
+        String action = intent.getAction();
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
+                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
+                || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            Tag tag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            assert tag != null;
+            byte[] payload = detectTagData(tag).getBytes();
         }
+    }
+
+    private String detectTagData(Tag tag) {
+        StringBuilder sb = new StringBuilder();
+        byte[] id = tag.getId();
+        sb.append("ID (hex): ").append(toHex(id)).append('\n');
+        sb.append("ID (reversed hex): ").append(toReversedHex(id)).append('\n');
+        sb.append("ID (dec): ").append(toDec(id)).append('\n');
+        sb.append("ID (reversed dec): ").append(toReversedDec(id)).append('\n');
+
+        String prefix = "android.nfc.tech.";
+        sb.append("Technologies: ");
+        for (String tech : tag.getTechList()) {
+            sb.append(tech.substring(prefix.length()));
+            sb.append(", ");
+        }
+
+        sb.delete(sb.length() - 2, sb.length());
+
+        for (String tech : tag.getTechList()) {
+            if (tech.equals(MifareClassic.class.getName())) {
+                sb.append('\n');
+                String type = "Unknown";
+
+                try {
+                    MifareClassic mifareTag = MifareClassic.get(tag);
+
+                    switch (mifareTag.getType()) {
+                        case MifareClassic.TYPE_CLASSIC:
+                            type = "Classic";
+                            break;
+                        case MifareClassic.TYPE_PLUS:
+                            type = "Plus";
+                            break;
+                        case MifareClassic.TYPE_PRO:
+                            type = "Pro";
+                            break;
+                    }
+                    sb.append("Mifare Classic type: ");
+                    sb.append(type);
+                    sb.append('\n');
+
+                    sb.append("Mifare size: ");
+                    sb.append(mifareTag.getSize() + " bytes");
+                    sb.append('\n');
+
+                    sb.append("Mifare sectors: ");
+                    sb.append(mifareTag.getSectorCount());
+                    sb.append('\n');
+
+                    sb.append("Mifare blocks: ");
+                    sb.append(mifareTag.getBlockCount());
+                } catch (Exception e) {
+                    sb.append("Mifare classic error: " + e.getMessage());
+                }
+            }
+
+            if (tech.equals(MifareUltralight.class.getName())) {
+                sb.append('\n');
+                MifareUltralight mifareUlTag = MifareUltralight.get(tag);
+                String type = "Unknown";
+                switch (mifareUlTag.getType()) {
+                    case MifareUltralight.TYPE_ULTRALIGHT:
+                        type = "Ultralight";
+                        break;
+                    case MifareUltralight.TYPE_ULTRALIGHT_C:
+                        type = "Ultralight C";
+                        break;
+                }
+                sb.append("Mifare Ultralight type: ");
+                sb.append(type);
+            }
+        }
+        Log.v("test",sb.toString());
+        return sb.toString();
+    }
+    private String toHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = bytes.length - 1; i >= 0; --i) {
+            int b = bytes[i] & 0xff;
+            if (b < 0x10)
+                sb.append('0');
+            sb.append(Integer.toHexString(b));
+            if (i > 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private String toReversedHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; ++i) {
+            if (i > 0) {
+                sb.append(" ");
+            }
+            int b = bytes[i] & 0xff;
+            if (b < 0x10)
+                sb.append('0');
+            sb.append(Integer.toHexString(b));
+        }
+        return sb.toString();
+    }
+
+    private long toDec(byte[] bytes) {
+        long result = 0;
+        long factor = 1;
+        for (int i = 0; i < bytes.length; ++i) {
+            long value = bytes[i] & 0xffl;
+            result += value * factor;
+            factor *= 256l;
+        }
+        return result;
+    }
+
+    private long toReversedDec(byte[] bytes) {
+        long result = 0;
+        long factor = 1;
+        for (int i = bytes.length - 1; i >= 0; --i) {
+            long value = bytes[i] & 0xffl;
+            result += value * factor;
+            factor *= 256l;
+        }
+        return result;
     }
 
 
@@ -271,7 +386,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.service)) {
+        if (status.equals(MainActivity.on_refile)) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -284,8 +399,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         dialog_get_from_refile.dismiss();
                         Date current_date = new Date();
                         type = MainActivity.expluatation;
-                        fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
-                        rechargeRequest.execute();
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
 
                     });
                     dialog_get_from_refile.setCancelable(true);
@@ -304,8 +419,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
                         dialog_send_to_refile.dismiss();
                         type = MainActivity.on_refile;
-                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
-                        rechargeRequest.execute();
+                        set_status_request set_status = new set_status_request();
+                        set_status.execute();
                     });
                     dialog_send_to_refile.setCancelable(false);
                     dialog_send_to_refile.show();
@@ -316,7 +431,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair) || status.equals(MainActivity.service)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair)) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -338,8 +453,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
                             type = MainActivity.expluatation;
-                            fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
-                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Принять с ремонта")) {
                             type = MainActivity.expluatation;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -398,8 +511,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = MainActivity.on_refile;
-                            toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
-                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
                             type = MainActivity.on_repair;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -441,6 +552,98 @@ public class Activity_qr_scaner extends AppCompatActivity {
             });
         }
 
+    }
+
+    public class get_status_request extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            value_2 = "";
+            res[0] = 0;
+            check[0] = 0;
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
+            URL get_status_endpoint = null;
+
+            try {
+
+                get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
+                try {
+                    HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
+                    get_status_connection.setRequestMethod("GET");
+                    get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
+                    System.out.println(get_status_connection.getResponseCode() + "Response code");
+                    if (get_status_connection.getResponseCode() == 200) {
+                        res[0] = 1;
+                        String inline = "";
+                        Scanner scanner = new Scanner(get_status_endpoint.openStream());
+                        InputStream get_status_input = get_status_connection.getInputStream();
+                        InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
+                        JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
+                        get_status_json_reader.beginObject();
+                        while (get_status_json_reader.hasNext()) {
+                            String key = get_status_json_reader.nextName();
+                            if (key.equals("result")) {
+                                if (!get_status_json_reader.nextString().equals("success")) {
+                                    check[0] = 0;
+                                } else {
+                                    check[0] = 1;
+                                }
+                            } else if (key.equals("data")) {
+                                get_status_json_reader.beginObject();
+                                while (get_status_json_reader.hasNext()) {
+                                    String key_2 = get_status_json_reader.nextName();
+                                    System.out.println("Ключ_2"+ key_2);
+                                    if (key_2.equals("current_status")) {
+                                        value_2 = get_status_json_reader.nextString();
+                                        System.out.print("Значение: "+value_2);
+                                        break;
+                                    } else {
+                                        get_status_json_reader.skipValue();
+                                    }
+                                }
+                            } else {
+                                get_status_json_reader.skipValue();
+                            }
+                        }
+                    } else {
+                        res[0] = 0;
+                    }
+                } catch (IOException e) {
+                    res[0] = 0;
+                    e.printStackTrace();
+
+                }
+            } catch (MalformedURLException e) {
+                res[0] = 0;
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
+
+            if (check[0] == 1 && res[0] == 1) {
+                System.out.println(value_2);
+                if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
+
+                    dialog_service_starter(value_2);
+                } else {
+                    dialog_refile_starter(value_2);
+                }
+            }
+            else {
+                api_error result_error = new api_error();
+                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
+            }
+        }
     }
 
     public class set_status_request extends AsyncTask<Void, Void, Void> {
@@ -704,7 +907,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     String key_2 = get_data_json_reader.nextName();
                                     System.out.println("Ключ_2"+ key_2);
                                     if (key_2.equals("status")){
-                                        value = get_data_json_reader.nextString();
+                                        value = get_data_json_reader.nextString().toLowerCase(Locale.ROOT);
                                     }
                                     else {
                                         get_data_json_reader.skipValue();

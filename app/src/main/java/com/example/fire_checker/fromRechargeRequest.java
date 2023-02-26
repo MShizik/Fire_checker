@@ -93,8 +93,6 @@ public class fromRechargeRequest extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
         if (check[0] == 1 && res[0] == 1) {
             System.out.println("Everything is ok");
-            Activity_qr_scaner.serial_number = "";
-            Activity_type_choser.chosen_type = "";
             this_act.startActivity(new Intent(this_act, Activity_Random_check.class));
         } else {
             api_error result_error = new api_error();

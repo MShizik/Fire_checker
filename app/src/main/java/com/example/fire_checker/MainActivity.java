@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static String token;
     ConstraintLayout progress_layout_obj;
     ProgressBar main_progress_bar;
-    public static String on_refile = "На перезаправке";
+    public static String on_refile = "Заправка";
     public static String on_repair = "В ремонте";
     public static String expluatation = "В эксплуатации";
     public static String utilization = "Утилизация";
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(MainActivity.this, "permission granted", Toast.LENGTH_SHORT).show();
-
 
             } else {
                 Toast.makeText(MainActivity.this, "permission not granted", Toast.LENGTH_SHORT).show();
