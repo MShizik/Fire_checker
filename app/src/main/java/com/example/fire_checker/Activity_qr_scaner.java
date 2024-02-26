@@ -2,18 +2,26 @@ package com.example.fire_checker;
 
 import static android.view.View.GONE;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.TagLostException;
 import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
+import android.nfc.tech.NfcA;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +58,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
@@ -108,6 +118,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
         */
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
+        /*
         if (mAdapter == null) {
             Toast.makeText(this,"NO NFC Capabilities",
                     Toast.LENGTH_SHORT).show();
@@ -115,20 +126,115 @@ public class Activity_qr_scaner extends AppCompatActivity {
         }
 
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
-                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                getClass()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
+
+        //IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        //tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
 
         scaner_home_btn.setOnClickListener(v -> {
             Activity_type_choser.chosen_type = "";
             startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
         });
+
+         */
+
     }
+
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        assert mAdapter != null;
-        mAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
+
+        if(mAdapter != null) {
+            Bundle options = new Bundle();
+            // Work around for some broken Nfc firmware implementations that poll the card too fast
+            options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
+
+            // Enable ReaderMode for all types of card and disable platform sounds
+            mAdapter.enableReaderMode(this,
+                    this::onTagDiscovered,
+                    NfcAdapter.FLAG_READER_NFC_A |
+                            NfcAdapter.FLAG_READER_NFC_B |
+                            NfcAdapter.FLAG_READER_NFC_F |
+                            NfcAdapter.FLAG_READER_NFC_V |
+                            NfcAdapter.FLAG_READER_NFC_BARCODE |
+                            NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS,
+                    options);
+        }
+    }
+
+    public void onTagDiscovered(Tag tag){
+
+        // Read and or write to Tag here to the appropriate Tag Technology type class
+        // in this example the card should be an Ndef Technology Type
+        Ndef mNdef = Ndef.get(tag);
+        System.out.println("Tag: " + mNdef.getTag());
+        System.out.println("Cached Message: " + mNdef.getCachedNdefMessage());
+        System.out.println("Type: " + mNdef.getType());
+        try {
+            System.out.println(mNdef.getTag()  + " " + mNdef.getNdefMessage());
+        }catch (Exception e){
+
+        }
+
+
+        // Check that it is an Ndef capable card
+        if (mNdef != null && false) {
+
+            // If we want to read
+            // As we did not turn on the NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK
+            // We can get the cached Ndef message the system read for us.
+
+            NdefMessage mNdefMessage = mNdef.getCachedNdefMessage();
+
+
+            // Or if we want to write a Ndef message
+
+            // Create a Ndef Record
+            NdefRecord mRecord = NdefRecord.createTextRecord("en", "English String");
+
+            // Add to a NdefMessage
+            NdefMessage mMsg = new NdefMessage(mRecord);
+
+            // Catch errors
+            try {
+                mNdef.connect();
+                mNdef.writeNdefMessage(mMsg);
+
+                // Success if got to here
+                runOnUiThread(() -> {
+                    Toast.makeText(getApplicationContext(),
+                            "Write to NFC Success",
+                            Toast.LENGTH_SHORT).show();
+                });
+
+                // Make a Sound
+                try {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(),
+                            notification);
+                    r.play();
+                } catch (Exception e) {
+                    // Some error playing sound
+                }
+
+            } catch (FormatException e) {
+                // if the NDEF Message to write is malformed
+            } catch (TagLostException e) {
+                // Tag went out of range before operations were complete
+            } catch (IOException e) {
+                // if there is an I/O failure, or the operation is cancelled
+            } finally {
+                // Be nice and try and close the tag to
+                // Disable I/O operations to the tag from this TagTechnology object, and release resources.
+                try {
+                    mNdef.close();
+                } catch (IOException e) {
+                    // if there is an I/O failure, or the operation is cancelled
+                }
+            }
+        }
     }
 
     @Override
@@ -142,19 +248,24 @@ public class Activity_qr_scaner extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
+        System.out.println("Intent " + intent.getAction());
         setIntent(intent);
         resolveIntent(intent);
     }
 
     private void resolveIntent(Intent intent) {
         String action = intent.getAction();
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
-                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
-                || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-            Tag tag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            assert tag != null;
-            byte[] payload = detectTagData(tag).getBytes();
+        System.out.println("Tag tapped: " + action);
+        if (true) {
+            Parcelable[] tag = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            System.out.println("Tag" + tag);
+
+
+
+            //byte[] payload = detectTagData(tag).getBytes();
         }
+
     }
 
     private String detectTagData(Tag tag) {

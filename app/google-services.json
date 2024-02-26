@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "943259711296",
+    "project_id": "firechecker-e9fce",
+    "storage_bucket": "firechecker-e9fce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943259711296:android:8167a1aee6ec6c08402ca5",
+        "android_client_info": {
+          "package_name": "npom_svarog.fire_checker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ0xdPxOLGe6QsvMtGmaqXlnTtgwl-RuM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
