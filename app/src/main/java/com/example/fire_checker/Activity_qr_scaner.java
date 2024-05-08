@@ -2,33 +2,15 @@ package com.example.fire_checker;
 
 import static android.view.View.GONE;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.nfc.FormatException;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.TagLostException;
-import android.nfc.tech.MifareClassic;
-import android.nfc.tech.MifareUltralight;
-import android.nfc.tech.Ndef;
-import android.nfc.tech.NfcA;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,8 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
@@ -73,8 +52,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
     String type = "";
     String value = "";
     String value_2 = "";
-    NfcAdapter mAdapter;
-    PendingIntent mPendingIntent;
     final int[] res = new int[1];
     final int[] check = new int[1];
     final int[] result = new int[2];
@@ -84,13 +61,12 @@ public class Activity_qr_scaner extends AppCompatActivity {
     public static Integer dialog_service_condition_problems_results;
     public static Integer dialog_on_service_condition_problems_results;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scaner);
         scaner_home_btn = findViewById(R.id.scaner_home_btn);
-        /*qr_code_scanner_view = findViewById(R.id.qr_scanner);
+        qr_code_scanner_view = findViewById(R.id.qr_scanner);
         qr_code_scanner = new CodeScanner(this, qr_code_scanner_view);
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -106,290 +82,21 @@ public class Activity_qr_scaner extends AppCompatActivity {
             @Override
             public void onDecoded(@NonNull Result result) {
                 if (!serial_number.equals(result.getText().toString())){
-                serial_number = result.getText().toString();
+                    serial_number = result.getText().toString();
 
-                ownership_request ownership_check = new ownership_request();
-                ownership_check.execute();
+                    ownership_request ownership_check = new ownership_request();
+                    ownership_check.execute();
                 }
 
             }
         });
         qr_code_scanner.startPreview();
-        */
 
-        mAdapter = NfcAdapter.getDefaultAdapter(this);
-        /*
-        if (mAdapter == null) {
-            Toast.makeText(this,"NO NFC Capabilities",
-                    Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
-                getClass()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
-
-        //IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        //tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
 
         scaner_home_btn.setOnClickListener(v -> {
             Activity_type_choser.chosen_type = "";
             startActivity(new Intent(Activity_qr_scaner.this, Activity_type_choser.class));
         });
-
-         */
-
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if(mAdapter != null) {
-            Bundle options = new Bundle();
-            // Work around for some broken Nfc firmware implementations that poll the card too fast
-            options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
-
-            // Enable ReaderMode for all types of card and disable platform sounds
-            mAdapter.enableReaderMode(this,
-                    this::onTagDiscovered,
-                    NfcAdapter.FLAG_READER_NFC_A |
-                            NfcAdapter.FLAG_READER_NFC_B |
-                            NfcAdapter.FLAG_READER_NFC_F |
-                            NfcAdapter.FLAG_READER_NFC_V |
-                            NfcAdapter.FLAG_READER_NFC_BARCODE |
-                            NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS,
-                    options);
-        }
-    }
-
-    public void onTagDiscovered(Tag tag){
-
-        // Read and or write to Tag here to the appropriate Tag Technology type class
-        // in this example the card should be an Ndef Technology Type
-        Ndef mNdef = Ndef.get(tag);
-        System.out.println("Tag: " + mNdef.getTag());
-        System.out.println("Cached Message: " + mNdef.getCachedNdefMessage());
-        System.out.println("Type: " + mNdef.getType());
-        try {
-            System.out.println(mNdef.getTag()  + " " + mNdef.getNdefMessage());
-        }catch (Exception e){
-
-        }
-
-
-        // Check that it is an Ndef capable card
-        if (mNdef != null && false) {
-
-            // If we want to read
-            // As we did not turn on the NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK
-            // We can get the cached Ndef message the system read for us.
-
-            NdefMessage mNdefMessage = mNdef.getCachedNdefMessage();
-
-
-            // Or if we want to write a Ndef message
-
-            // Create a Ndef Record
-            NdefRecord mRecord = NdefRecord.createTextRecord("en", "English String");
-
-            // Add to a NdefMessage
-            NdefMessage mMsg = new NdefMessage(mRecord);
-
-            // Catch errors
-            try {
-                mNdef.connect();
-                mNdef.writeNdefMessage(mMsg);
-
-                // Success if got to here
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(),
-                            "Write to NFC Success",
-                            Toast.LENGTH_SHORT).show();
-                });
-
-                // Make a Sound
-                try {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(),
-                            notification);
-                    r.play();
-                } catch (Exception e) {
-                    // Some error playing sound
-                }
-
-            } catch (FormatException e) {
-                // if the NDEF Message to write is malformed
-            } catch (TagLostException e) {
-                // Tag went out of range before operations were complete
-            } catch (IOException e) {
-                // if there is an I/O failure, or the operation is cancelled
-            } finally {
-                // Be nice and try and close the tag to
-                // Disable I/O operations to the tag from this TagTechnology object, and release resources.
-                try {
-                    mNdef.close();
-                } catch (IOException e) {
-                    // if there is an I/O failure, or the operation is cancelled
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mAdapter != null) {
-            mAdapter.disableForegroundDispatch(this);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        System.out.println("Intent " + intent.getAction());
-        setIntent(intent);
-        resolveIntent(intent);
-    }
-
-    private void resolveIntent(Intent intent) {
-        String action = intent.getAction();
-        System.out.println("Tag tapped: " + action);
-        if (true) {
-            Parcelable[] tag = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            System.out.println("Tag" + tag);
-
-
-
-            //byte[] payload = detectTagData(tag).getBytes();
-        }
-
-    }
-
-    private String detectTagData(Tag tag) {
-        StringBuilder sb = new StringBuilder();
-        byte[] id = tag.getId();
-        sb.append("ID (hex): ").append(toHex(id)).append('\n');
-        sb.append("ID (reversed hex): ").append(toReversedHex(id)).append('\n');
-        sb.append("ID (dec): ").append(toDec(id)).append('\n');
-        sb.append("ID (reversed dec): ").append(toReversedDec(id)).append('\n');
-
-        String prefix = "android.nfc.tech.";
-        sb.append("Technologies: ");
-        for (String tech : tag.getTechList()) {
-            sb.append(tech.substring(prefix.length()));
-            sb.append(", ");
-        }
-
-        sb.delete(sb.length() - 2, sb.length());
-
-        for (String tech : tag.getTechList()) {
-            if (tech.equals(MifareClassic.class.getName())) {
-                sb.append('\n');
-                String type = "Unknown";
-
-                try {
-                    MifareClassic mifareTag = MifareClassic.get(tag);
-
-                    switch (mifareTag.getType()) {
-                        case MifareClassic.TYPE_CLASSIC:
-                            type = "Classic";
-                            break;
-                        case MifareClassic.TYPE_PLUS:
-                            type = "Plus";
-                            break;
-                        case MifareClassic.TYPE_PRO:
-                            type = "Pro";
-                            break;
-                    }
-                    sb.append("Mifare Classic type: ");
-                    sb.append(type);
-                    sb.append('\n');
-
-                    sb.append("Mifare size: ");
-                    sb.append(mifareTag.getSize() + " bytes");
-                    sb.append('\n');
-
-                    sb.append("Mifare sectors: ");
-                    sb.append(mifareTag.getSectorCount());
-                    sb.append('\n');
-
-                    sb.append("Mifare blocks: ");
-                    sb.append(mifareTag.getBlockCount());
-                } catch (Exception e) {
-                    sb.append("Mifare classic error: " + e.getMessage());
-                }
-            }
-
-            if (tech.equals(MifareUltralight.class.getName())) {
-                sb.append('\n');
-                MifareUltralight mifareUlTag = MifareUltralight.get(tag);
-                String type = "Unknown";
-                switch (mifareUlTag.getType()) {
-                    case MifareUltralight.TYPE_ULTRALIGHT:
-                        type = "Ultralight";
-                        break;
-                    case MifareUltralight.TYPE_ULTRALIGHT_C:
-                        type = "Ultralight C";
-                        break;
-                }
-                sb.append("Mifare Ultralight type: ");
-                sb.append(type);
-            }
-        }
-        Log.v("test",sb.toString());
-        return sb.toString();
-    }
-    private String toHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = bytes.length - 1; i >= 0; --i) {
-            int b = bytes[i] & 0xff;
-            if (b < 0x10)
-                sb.append('0');
-            sb.append(Integer.toHexString(b));
-            if (i > 0) {
-                sb.append(" ");
-            }
-        }
-        return sb.toString();
-    }
-
-    private String toReversedHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; ++i) {
-            if (i > 0) {
-                sb.append(" ");
-            }
-            int b = bytes[i] & 0xff;
-            if (b < 0x10)
-                sb.append('0');
-            sb.append(Integer.toHexString(b));
-        }
-        return sb.toString();
-    }
-
-    private long toDec(byte[] bytes) {
-        long result = 0;
-        long factor = 1;
-        for (int i = 0; i < bytes.length; ++i) {
-            long value = bytes[i] & 0xffl;
-            result += value * factor;
-            factor *= 256l;
-        }
-        return result;
-    }
-
-    private long toReversedDec(byte[] bytes) {
-        long result = 0;
-        long factor = 1;
-        for (int i = bytes.length - 1; i >= 0; --i) {
-            long value = bytes[i] & 0xffl;
-            result += value * factor;
-            factor *= 256l;
-        }
-        return result;
     }
 
 
@@ -497,7 +204,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
     protected void dialog_refile_starter(String status) {
-        if (status.equals(MainActivity.on_refile)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.service)) {
             //Диалоговое окно для принятия с заправки
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -510,8 +217,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         dialog_get_from_refile.dismiss();
                         Date current_date = new Date();
                         type = MainActivity.expluatation;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
+                        rechargeRequest.execute();
 
                     });
                     dialog_get_from_refile.setCancelable(true);
@@ -530,8 +237,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                     dialog_send_to_refile_confirmation_btn.setOnClickListener(v -> {
                         dialog_send_to_refile.dismiss();
                         type = MainActivity.on_refile;
-                        set_status_request set_status = new set_status_request();
-                        set_status.execute();
+                        toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
+                        rechargeRequest.execute();
                     });
                     dialog_send_to_refile.setCancelable(false);
                     dialog_send_to_refile.show();
@@ -542,7 +249,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
 
     protected void dialog_service_starter(String status) {
 
-        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair)) {
+        if (status.equals(MainActivity.on_refile) || status.equals(MainActivity.on_repair) || status.equals(MainActivity.service)) {
             //Диалоговое окно для закрытия обслуживания
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -564,6 +271,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Принять с заправки")) {
                             type = MainActivity.expluatation;
+                            fromRechargeRequest rechargeRequest = new fromRechargeRequest(Activity_qr_scaner.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Принять с ремонта")) {
                             type = MainActivity.expluatation;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -622,6 +331,8 @@ public class Activity_qr_scaner extends AppCompatActivity {
                         Date current_date = new Date();
                         if (service_chosen_type.equals("Отправить на заправку")) {
                             type = MainActivity.on_refile;
+                            toRechargeRequest rechargeRequest = new toRechargeRequest(Activity_qr_scaner.this);
+                            rechargeRequest.execute();
                         } else if (service_chosen_type.equals("Отправить на ремонт")) {
                             type = MainActivity.on_repair;
                         } else if (service_chosen_type.equals("Вывести из эксплуатации")) {
@@ -663,98 +374,6 @@ public class Activity_qr_scaner extends AppCompatActivity {
             });
         }
 
-    }
-
-    public class get_status_request extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            value_2 = "";
-            res[0] = 0;
-            check[0] = 0;
-            findViewById(R.id.scaner_progress_layout).setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String PROPERTY_AUTH = "Bearer " + MainActivity.token;
-            URL get_status_endpoint = null;
-
-            try {
-
-                get_status_endpoint = new URL("http://194.67.55.58:8080/api/getStatus?fire_id=" + serial_number);
-                try {
-                    HttpURLConnection get_status_connection = (HttpURLConnection) get_status_endpoint.openConnection();
-                    get_status_connection.setRequestMethod("GET");
-                    get_status_connection.setRequestProperty("Authorization", PROPERTY_AUTH);
-                    System.out.println(get_status_connection.getResponseCode() + "Response code");
-                    if (get_status_connection.getResponseCode() == 200) {
-                        res[0] = 1;
-                        String inline = "";
-                        Scanner scanner = new Scanner(get_status_endpoint.openStream());
-                        InputStream get_status_input = get_status_connection.getInputStream();
-                        InputStreamReader get_status_input_reader = new InputStreamReader(get_status_input, StandardCharsets.UTF_8);
-                        JsonReader get_status_json_reader = new JsonReader(get_status_input_reader);
-                        get_status_json_reader.beginObject();
-                        while (get_status_json_reader.hasNext()) {
-                            String key = get_status_json_reader.nextName();
-                            if (key.equals("result")) {
-                                if (!get_status_json_reader.nextString().equals("success")) {
-                                    check[0] = 0;
-                                } else {
-                                    check[0] = 1;
-                                }
-                            } else if (key.equals("data")) {
-                                get_status_json_reader.beginObject();
-                                while (get_status_json_reader.hasNext()) {
-                                    String key_2 = get_status_json_reader.nextName();
-                                    System.out.println("Ключ_2"+ key_2);
-                                    if (key_2.equals("current_status")) {
-                                        value_2 = get_status_json_reader.nextString();
-                                        System.out.print("Значение: "+value_2);
-                                        break;
-                                    } else {
-                                        get_status_json_reader.skipValue();
-                                    }
-                                }
-                            } else {
-                                get_status_json_reader.skipValue();
-                            }
-                        }
-                    } else {
-                        res[0] = 0;
-                    }
-                } catch (IOException e) {
-                    res[0] = 0;
-                    e.printStackTrace();
-
-                }
-            } catch (MalformedURLException e) {
-                res[0] = 0;
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            findViewById(R.id.scaner_progress_layout).setVisibility(View.GONE);
-
-            if (check[0] == 1 && res[0] == 1) {
-                System.out.println(value_2);
-                if (Activity_type_choser.chosen_type.equals("Обслуживание")) {
-
-                    dialog_service_starter(value_2);
-                } else {
-                    dialog_refile_starter(value_2);
-                }
-            }
-            else {
-                api_error result_error = new api_error();
-                result_error.dialog_api_error_starter(Activity_qr_scaner.this);
-            }
-        }
     }
 
     public class set_status_request extends AsyncTask<Void, Void, Void> {
@@ -1018,7 +637,7 @@ public class Activity_qr_scaner extends AppCompatActivity {
                                     String key_2 = get_data_json_reader.nextName();
                                     System.out.println("Ключ_2"+ key_2);
                                     if (key_2.equals("status")){
-                                        value = get_data_json_reader.nextString().toLowerCase(Locale.ROOT);
+                                        value = get_data_json_reader.nextString();
                                     }
                                     else {
                                         get_data_json_reader.skipValue();
@@ -1065,5 +684,3 @@ public class Activity_qr_scaner extends AppCompatActivity {
     }
 
 }
-
-

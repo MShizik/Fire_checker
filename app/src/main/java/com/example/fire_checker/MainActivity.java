@@ -1,10 +1,12 @@
 package com.example.fire_checker;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
@@ -15,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -24,7 +28,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,13 +45,23 @@ public class MainActivity extends AppCompatActivity {
     Integer login_and_password_checker = 0;
     public static String login, password;
     public static String token;
+    public static String notificationToken;
     ConstraintLayout progress_layout_obj;
     ProgressBar main_progress_bar;
-    public static String on_refile = "Заправка";
+    public static String on_refile = "На перезаправке";
     public static String on_repair = "В ремонте";
     public static String expluatation = "В эксплуатации";
     public static String utilization = "Утилизация";
     public static String service = "Обслуживание";
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(MainActivity.this, "permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "permission not granted", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         .addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String token) {
+                notificationToken = token;
                 Log.d("FCM Token", "Token: " + token);
             }
         })
@@ -68,6 +82,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("FCM Token", "Failed to get token: " + e.getMessage());
             }
         });
+
+        String permissionCamera = Manifest.permission.CAMERA;
+        String permissionNotifications = Manifest.permission.POST_NOTIFICATIONS;
+        int grantCamera = ContextCompat.checkSelfPermission(this, permissionCamera);
+        int grantNotifications =  ContextCompat.checkSelfPermission(this, permissionNotifications);
+        if (grantCamera != PackageManager.PERMISSION_GRANTED && grantNotifications != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA},1);
+            if (Build.VERSION.SDK_INT >= 33) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+            }
+        }
 
         login_btn = findViewById(R.id.login_btn);
         login_obj = findViewById(R.id.main_login_input_field);
@@ -90,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -105,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
     public class auth_request extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -114,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String POST_PARAMS = "{\"email\":\"" + login + "\",\"password\":\"" + password + "\"}";
+            String POST_PARAMS = "{\"email\":\"" + login + "\",\"password\":\"" + password + "\",\"notification_token\":" + notificationToken + "\"}";
             URL login_endpoint = null;
             try {
                 login_endpoint = new URL("http://194.67.55.58:8080/api/login");
@@ -188,5 +221,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
