@@ -2,6 +2,8 @@ package com.example.fire_checker;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        createNotificationChannel();
+
         login_btn = findViewById(R.id.login_btn);
         login_obj = findViewById(R.id.main_login_input_field);
         password_obj = findViewById(R.id.main_password_input_field);
@@ -116,6 +120,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "fire_checker_channel_id";
+            CharSequence name = "Notification Channel";
+            String description = "Channel to connect with server";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 
